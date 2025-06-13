@@ -1,16 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
+import handleWebSocket from "@/utils/handleWebSocket";
 
 export default function Home() {
   const [data, setData] = useState("Loading...");
   useEffect(() => {
-    const ws = new WebSocket(
-      process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4000"
-    );
-    ws.onmessage = (e) => {
-      let data = JSON.parse(e.data);
-      setData("Received from server: " + data.message);
-    };
+    handleWebSocket({ setData });
   }, []);
 
   return (

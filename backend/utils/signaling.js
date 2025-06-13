@@ -1,10 +1,28 @@
 function handleWebSocket(socket) {
-  socket.send(JSON.stringify({ type: "welcome", message: "Welcome!" }));
+  if (waiting) {
+    const peer = waiting;
+    waiting = null;
 
-  setTimeout(() => {
-    socket.send(JSON.stringify({ type: "goodbye", message: "Goodbye!" }));
-    socket.close();
-  }, 5000);
+    socket.peer = peer;
+    peer.peer = socket;
+
+    socket.send(JSON.stringify({ type: "connected", role: "caller" }));
+    peer.send(JSON.stringify({ type: "connected", role: "callee" }));
+  } else {
+    waiting = socket;
+    socket.send(JSON.stringify({ type: "waiting" }));
+  }
+
+  socket.on("message", (data) => {
+    if (socket.peer) socket.peer.send(data);
+  });
+
+  socket.on("close", () => {
+    if (socket.peer) {
+      socket.peer.send(JSON.stringify({ type: "disconnected" }));
+      socket.peer.peer = null;
+    } else waiting = null;
+  });
 }
 
 module.exports = { handleWebSocket };

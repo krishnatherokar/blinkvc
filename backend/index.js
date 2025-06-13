@@ -31,6 +31,8 @@ app.get("/", (req, res) => {
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+global.waiting = null;
+
 wss.on("connection", handleWebSocket);
 
 const PORT = process.env.PORT || 4000;
