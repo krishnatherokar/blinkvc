@@ -1,9 +1,13 @@
-const handleWebSocket = ({ setData }) => {
+type HandleWebSocketProps = {
+  setData: (message: string) => void;
+};
+
+const handleWebSocket = ({ setData }: HandleWebSocketProps): void => {
   const ws = new WebSocket(
     process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4000"
   );
 
-  ws.onmessage = async (event) => {
+  ws.onmessage = async (event: MessageEvent) => {
     const text =
       event.data instanceof Blob ? await event.data.text() : event.data;
     const data = JSON.parse(text);
@@ -26,8 +30,9 @@ const handleWebSocket = ({ setData }) => {
         break;
 
       default:
-        setData(data.message);
+        setData(data.message || "Unknown message from server");
     }
   };
 };
+
 export default handleWebSocket;
