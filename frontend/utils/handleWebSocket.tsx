@@ -1,23 +1,13 @@
-import setupVideoCall from "./setupVideoCall";
+import { endVideoCall, setupVideoCall } from "./setupVideoCall";
 
-type HandleWebSocketProps = {
-  setData: (message: string) => void;
-};
-
-const handleWebSocket = ({
-  setData,
-  localvideoRef,
-  remotevideoRef,
-  peerconnection,
-}: HandleWebSocketProps & {
-  localvideoRef: React.RefObject<HTMLVideoElement | null>;
-  remotevideoRef: React.RefObject<HTMLVideoElement | null>;
-  peerconnection: React.RefObject<RTCPeerConnection | null>;
-}): void => {
-  const ws = new WebSocket(
-    process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4000"
-  );
-
+const handleWebSocket = (
+  ws: WebSocket,
+  setData: (message: string) => void,
+  localvideoRef: React.RefObject<HTMLVideoElement | null>,
+  localStreamRef: React.RefObject<MediaStream | null>,
+  remotevideoRef: React.RefObject<HTMLVideoElement | null>,
+  peerconnection: React.RefObject<RTCPeerConnection | null>
+): void => {
   ws.onmessage = async (event: MessageEvent) => {
     const text =
       event.data instanceof Blob ? await event.data.text() : event.data;
@@ -30,13 +20,14 @@ const handleWebSocket = ({
 
       case "connected":
         setData("Connected to a peer!");
-        setupVideoCall({
-          data,
+        setupVideoCall(
           ws,
           peerconnection,
           localvideoRef,
           remotevideoRef,
-        });
+          localStreamRef,
+          data.role
+        );
         break;
 
       case "candidate":
@@ -68,9 +59,8 @@ const handleWebSocket = ({
 
       case "disconnected":
         setData("Peer disconnected");
-        if (localvideoRef.current) localvideoRef.current.srcObject = null;
-        if (remotevideoRef.current) remotevideoRef.current.srcObject = null;
         ws.close();
+        endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
         break;
 
       default:

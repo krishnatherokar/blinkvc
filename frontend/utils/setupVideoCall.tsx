@@ -1,18 +1,11 @@
-import { useRef } from "react";
-
-const setupVideoCall = async ({
-  data,
-  ws,
-  peerconnection,
-  localvideoRef,
-  remotevideoRef,
-}: {
-  data: any;
-  ws: WebSocket;
-  peerconnection: React.RefObject<RTCPeerConnection | null>;
-  localvideoRef: React.RefObject<HTMLVideoElement | null>;
-  remotevideoRef: React.RefObject<HTMLVideoElement | null>;
-}) => {
+export const setupVideoCall = async (
+  ws: WebSocket,
+  peerconnection: React.RefObject<RTCPeerConnection | null>,
+  localvideoRef: React.RefObject<HTMLVideoElement | null>,
+  remotevideoRef: React.RefObject<HTMLVideoElement | null>,
+  localStreamRef: React.RefObject<MediaStream | null>,
+  role: "caller" | "callee"
+) => {
   peerconnection.current = new RTCPeerConnection({
     iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
   });
@@ -21,6 +14,8 @@ const setupVideoCall = async ({
     video: true,
     audio: true,
   });
+
+  localStreamRef.current = localStream;
 
   localStream.getTracks().forEach((track) => {
     peerconnection.current?.addTrack(track, localStream);
@@ -44,7 +39,7 @@ const setupVideoCall = async ({
     }
   };
 
-  if (data.role === "caller") {
+  if (role === "caller") {
     const offer = await peerconnection.current.createOffer();
     await peerconnection.current.setLocalDescription(offer);
     ws.send(
@@ -56,4 +51,13 @@ const setupVideoCall = async ({
   }
 };
 
-export default setupVideoCall;
+export const endVideoCall = (
+  localStreamRef: React.RefObject<MediaStream | null>,
+  localvideoRef: React.RefObject<HTMLVideoElement | null>,
+  remotevideoRef: React.RefObject<HTMLVideoElement | null>
+) => {
+  localStreamRef.current?.getTracks().forEach((track) => track.stop());
+  localStreamRef.current = null;
+  if (localvideoRef.current) localvideoRef.current.srcObject = null;
+  if (remotevideoRef.current) remotevideoRef.current.srcObject = null;
+};
