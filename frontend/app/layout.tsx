@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
+import { WebSocketProvider } from "@/contexts/WSContext";
 
 export const metadata: Metadata = {
   title: "Blinkvc",
@@ -15,12 +16,14 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
+    <WebSocketProvider>
       <html lang="en">
         <body className="bg-white text-black dark:bg-gray-900 dark:text-white">
           <Navbar />
           {children}
         </body>
       </html>
+    </WebSocketProvider>
     </ClerkProvider>
   );
 }

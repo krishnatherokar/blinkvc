@@ -1,22 +1,26 @@
+const { endCall } = require("./endCall");
 const { handleRandomCall } = require("./handleRandomCall");
 
 function handleWebSocket(socket) {
-  let isRandomCall = false;
-
   socket.on("message", (data) => {
     if (data instanceof Buffer) data = data.toString();
     data = JSON.parse(data);
 
-    if (data.type == "random-call") {
-      isRandomCall = true;
-      handleRandomCall({ socket });
-    } else if (socket.peer) socket.peer.send(JSON.stringify(data));
+    switch (data.type) {
+      case "random-call":
+        handleRandomCall({ socket });
+        break;
+      case "end-call":
+        endCall(socket);
+        break;
+
+      default:
+        if (socket.peer) socket.peer.send(JSON.stringify(data));
+    }
   });
 
   socket.on("close", () => {
-    if (socket.peer) {
-      socket.peer.send(JSON.stringify({ type: "disconnected" }));
-    } else if (isRandomCall) waiting = null;
+    endCall(socket);
   });
 }
 

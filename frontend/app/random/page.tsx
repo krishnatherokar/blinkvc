@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import handleWebSocket from "@/utils/handleWebSocket";
 import { endVideoCall } from "@/utils/setupVideoCall";
+import { useWSContext } from "@/contexts/WSContext";
 
 export default function Home() {
   const localvideoRef = useRef<HTMLVideoElement | null>(null);
@@ -10,15 +11,11 @@ export default function Home() {
   const peerconnection = useRef<RTCPeerConnection | null>(null);
   const [data, setData] = useState("Loading...");
   const [count, setCount] = useState(0);
+  const { ws } = useWSContext();
 
   useEffect(() => {
-    const ws = new WebSocket(
-      process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4000"
-    );
-
-    ws.onopen = () => {
-      ws.send(JSON.stringify({ type: "random-call" }));
-    };
+    if (!ws) return;
+    ws.send(JSON.stringify({ type: "random-call" }));
 
     handleWebSocket(
       ws,
@@ -30,10 +27,10 @@ export default function Home() {
     );
 
     return () => {
-      ws?.close();
+      ws.send(JSON.stringify({ type: "end-call" }));
       endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
     };
-  }, [count]);
+  }, [count, ws]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8">

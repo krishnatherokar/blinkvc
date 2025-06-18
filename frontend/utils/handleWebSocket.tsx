@@ -59,7 +59,6 @@ const handleWebSocket = (
 
       case "disconnected":
         setData("Peer disconnected");
-        ws.close();
         endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
         break;
 
