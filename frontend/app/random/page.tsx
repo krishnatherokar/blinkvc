@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import handleWebSocket from "@/utils/handleWebSocket";
 import { endVideoCall } from "@/utils/setupVideoCall";
 import { useWSContext } from "@/contexts/WSContext";
+import { askMediaAccess } from "@/utils/askMediaAccess";
 
 export default function Home() {
   const localvideoRef = useRef<HTMLVideoElement | null>(null);
@@ -11,10 +12,18 @@ export default function Home() {
   const peerconnection = useRef<RTCPeerConnection | null>(null);
   const [data, setData] = useState("Loading...");
   const [count, setCount] = useState(0);
+  const [mediaAccess, setMediaAccess] = useState(false);
   const { ws } = useWSContext();
 
   useEffect(() => {
+    askMediaAccess(setMediaAccess);
+
     if (!ws) return;
+    if (!mediaAccess) {
+      setData("Camera and Mic permission denied");
+      return;
+    }
+
     ws.send(JSON.stringify({ type: "random-call" }));
 
     handleWebSocket(
@@ -30,7 +39,7 @@ export default function Home() {
       ws.send(JSON.stringify({ type: "end-call" }));
       endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
     };
-  }, [count, ws]);
+  }, [count, ws, mediaAccess]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8">
