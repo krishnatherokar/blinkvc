@@ -1,4 +1,5 @@
 "use client";
+import { useUser } from "@clerk/nextjs";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 type WebSocketContextType = {
@@ -16,9 +17,10 @@ export const WebSocketProvider = ({
   const wsRef = useRef<WebSocket | null>(null);
   const [ready, setReady] = useState(false);
   const [count, setCount] = useState(0);
+  const { user, isLoaded } = useUser();
 
   useEffect(() => {
-    if (count > 4) return;
+    if (!isLoaded || count > 4) return;
     // limit the number of reconnection attempts
 
     const ws = new WebSocket(
@@ -27,7 +29,18 @@ export const WebSocketProvider = ({
 
     wsRef.current = ws;
 
-    ws.onopen = () => {
+    ws.onopen = async () => {
+      if (user) {
+        ws.send(
+          JSON.stringify({
+            type: "mark-online",
+            user: {
+              id: user.id,
+              username: user.username,
+            },
+          })
+        );
+      }
       setReady(true);
       // setReady is important to rerender the components
     };
@@ -41,7 +54,7 @@ export const WebSocketProvider = ({
     return () => {
       ws.close();
     };
-  }, [count]);
+  }, [count, isLoaded]);
 
   return (
     <WebSocketContext.Provider value={{ ws: wsRef.current, ready }}>
