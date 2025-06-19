@@ -22,20 +22,25 @@ export default function Home() {
     if (!mediaAccess) {
       setData("Camera and Mic permission denied");
       return;
-    }
+    } else setData("Loading...");
+
+    const handleMessages = (event: MessageEvent) => {
+      handleWebSocket(
+        event,
+        ws,
+        setData,
+        localvideoRef,
+        localStreamRef,
+        remotevideoRef,
+        peerconnection
+      );
+    };
 
     ws.send(JSON.stringify({ type: "random-call" }));
-
-    handleWebSocket(
-      ws,
-      setData,
-      localvideoRef,
-      localStreamRef,
-      remotevideoRef,
-      peerconnection
-    );
+    ws.addEventListener("message", handleMessages);
 
     return () => {
+      ws.removeEventListener("message", handleMessages);
       ws.send(JSON.stringify({ type: "end-call" }));
       endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
     };

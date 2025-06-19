@@ -1,14 +1,14 @@
 import { endVideoCall, setupVideoCall } from "./setupVideoCall";
 
-const handleWebSocket = (
+const handleWebSocket = async (
+  event: MessageEvent,
   ws: WebSocket,
   setData: (message: string) => void,
   localvideoRef: React.RefObject<HTMLVideoElement | null>,
   localStreamRef: React.RefObject<MediaStream | null>,
   remotevideoRef: React.RefObject<HTMLVideoElement | null>,
   peerconnection: React.RefObject<RTCPeerConnection | null>
-): void => {
-  ws.onmessage = async (event: MessageEvent) => {
+) => {
     const text =
       event.data instanceof Blob ? await event.data.text() : event.data;
     const data = JSON.parse(text);
@@ -65,7 +65,6 @@ const handleWebSocket = (
       default:
         setData(data.message || "Unknown message from server");
     }
-  };
 };
 
 export default handleWebSocket;
