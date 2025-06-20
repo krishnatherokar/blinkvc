@@ -19,7 +19,8 @@ export async function POST(req: NextRequest) {
         });
         break;
       case "user.updated":
-        await User.updateOne({ clerkId: id }, { username });
+        await User.updateOne({ clerkId: id }, { username }, { upsert: true });
+        // upsert ensures that if user is not created already, it will create one
         break;
       case "user.deleted":
         await User.deleteOne({ clerkId: id });
