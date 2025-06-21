@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import handleWebSocket from "@/utils/handleWebSocket";
 import { endVideoCall } from "@/utils/setupVideoCall";
 import { useWSContext } from "@/contexts/WSContext";
@@ -7,7 +7,7 @@ import { askMediaAccess } from "@/utils/askMediaAccess";
 import VideoScreen from "@/components/VideoScreen";
 import { useSearchParams } from "next/navigation";
 
-export default function Home() {
+function Main() {
   const localvideoRef = useRef<HTMLVideoElement | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const remotevideoRef = useRef<HTMLVideoElement | null>(null);
@@ -59,4 +59,12 @@ export default function Home() {
   };
 
   return <VideoScreen {...screenProps} />;
+}
+
+export default function Page() {
+  return (
+    <Suspense>
+      <Main />
+    </Suspense>
+  );
 }
