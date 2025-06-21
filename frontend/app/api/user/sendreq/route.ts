@@ -5,16 +5,16 @@ import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
-  const { targetId } = await req.json();
+  const { targetUsername } = await req.json();
 
-  if (!userId || !targetId) {
+  if (!userId || !targetUsername) {
     return new Response("Unauthorized or Missing Params", { status: 400 });
   }
 
   await connectDB();
 
   const user = await User.findOne({ clerkId: userId });
-  const targetUser = await User.findOne({ clerkId: targetId });
+  const targetUser = await User.findOne({ username: targetUsername });
 
   if (!user || !targetUser) {
     return new Response("User not found", { status: 404 });
