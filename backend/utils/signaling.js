@@ -1,5 +1,6 @@
 const { endCall } = require("./endCall");
 const { handleRandomCall } = require("./handleRandomCall");
+const { sendCallReq, acceptCall } = require("./handleCall");
 
 global.onlineMap = new Map();
 
@@ -13,6 +14,12 @@ function handleWebSocket(socket) {
         socket.userId = data.user.id;
         socket.username = data.user.username;
         onlineMap.set(socket.userId, socket);
+        break;
+      case "call-to":
+        sendCallReq(socket, data.targetId);
+        break;
+      case "accept-call":
+        acceptCall(socket, data.targetId);
         break;
       case "random-call":
         handleRandomCall({ socket });
