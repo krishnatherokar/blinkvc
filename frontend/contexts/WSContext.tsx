@@ -1,6 +1,7 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { useToast } from "./GlobalToastContext";
 
 type WebSocketContextType = {
   ws: WebSocket | null;
@@ -18,6 +19,7 @@ export const WebSocketProvider = ({
   const [ready, setReady] = useState(false);
   const [count, setCount] = useState(0);
   const { user, isLoaded } = useUser();
+  const { triggerToast } = useToast();
 
   useEffect(() => {
     if (!isLoaded || count > 4) return;
@@ -26,6 +28,21 @@ export const WebSocketProvider = ({
     const ws = new WebSocket(
       process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4000"
     );
+
+    const handleGlobalMessage = async (event: MessageEvent) => {
+      const text =
+        event.data instanceof Blob ? await event.data.text() : event.data;
+      const data = JSON.parse(text);
+
+      switch (data.type) {
+        case "call-request":
+          triggerToast({
+            callerId: data.callerId,
+            text: `Call from @${data.callername}`,
+          });
+          break;
+      }
+    };
 
     wsRef.current = ws;
 
@@ -45,6 +62,8 @@ export const WebSocketProvider = ({
       // setReady is important to rerender the components
     };
 
+    ws.addEventListener("message", handleGlobalMessage);
+
     ws.onclose = () => {
       setReady(false);
       setCount((count) => count + 1);
@@ -52,6 +71,7 @@ export const WebSocketProvider = ({
     };
 
     return () => {
+      ws.removeEventListener("message", handleGlobalMessage);
       ws.close();
     };
   }, [count, isLoaded]);

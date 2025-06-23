@@ -8,7 +8,11 @@ const sendCallReq = (socket, targetId) => {
     if (!checkFriends(socket, targetId)) return;
 
     targetSocket.send(
-      JSON.stringify({ type: "call-request", caller: socket.username })
+      JSON.stringify({
+        type: "call-request",
+        callername: socket.username,
+        callerId: socket.userId,
+      })
     );
     socket.send(JSON.stringify({ type: "call-response", response: "ringing" }));
   }
