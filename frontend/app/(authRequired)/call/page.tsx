@@ -21,7 +21,7 @@ function Main() {
   useEffect(() => {
     askMediaAccess(setMediaAccess);
 
-    if (!ws || !params) return;
+    if (ws?.readyState != WebSocket.OPEN || !params) return;
     if (!mediaAccess) {
       setData("Camera and Mic permission denied");
       return;
@@ -50,7 +50,7 @@ function Main() {
       ws.send(JSON.stringify({ type: "end-call" }));
       endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
     };
-  }, [ws, mediaAccess, params]);
+  }, [ws?.readyState, mediaAccess, params]);
 
   const screenProps = {
     data,
