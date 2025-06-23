@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
 import { WebSocketProvider } from "@/contexts/WSContext";
 import { UserProvider } from "@/contexts/UserContext";
+import { ToastProvider } from "@/contexts/GlobalToastContext";
 
 export const metadata: Metadata = {
   title: "Blinkvc",
@@ -17,6 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
+    <ToastProvider>
     <WebSocketProvider>
     <UserProvider>
       <html lang="en">
@@ -27,6 +29,7 @@ export default function RootLayout({
       </html>
     </UserProvider>
     </WebSocketProvider>
+    </ToastProvider>
     </ClerkProvider>
   );
 }
