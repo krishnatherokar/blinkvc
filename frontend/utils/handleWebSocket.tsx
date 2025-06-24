@@ -3,7 +3,7 @@ import { endVideoCall, setupVideoCall } from "./setupVideoCall";
 const handleWebSocket = async (
   event: MessageEvent,
   ws: WebSocket,
-  setData: (message: string) => void,
+  setData: any,
   localvideoRef: React.RefObject<HTMLVideoElement | null>,
   localStreamRef: React.RefObject<MediaStream | null>,
   remotevideoRef: React.RefObject<HTMLVideoElement | null>,
@@ -16,6 +16,13 @@ const handleWebSocket = async (
     switch (data.type) {
       case "waiting":
         setData("Server waiting for a peer...");
+        break;
+
+      case "call-response":
+        setData(data.response);
+        if (data.response == "ringing") {
+          setTimeout(() => {setData((data: String) => data == "ringing" ? "Unanswered" : data)}, 15000);
+        }
         break;
 
       case "connected":

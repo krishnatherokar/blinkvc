@@ -6,6 +6,7 @@ import { useWSContext } from "@/contexts/WSContext";
 import { askMediaAccess } from "@/utils/askMediaAccess";
 import VideoScreen from "@/components/VideoScreen";
 import { useSearchParams } from "next/navigation";
+import axios from "axios";
 
 function Main() {
   const localvideoRef = useRef<HTMLVideoElement | null>(null);
@@ -51,6 +52,14 @@ function Main() {
       endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
     };
   }, [ws?.readyState, mediaAccess, params]);
+
+  useEffect(() => {
+    const sendMissedCall = async (targetId: string | null) => {
+      await axios.post("/api/call/sendmissedcall", { targetId });
+    };
+
+    if (data == "Unanswered") sendMissedCall(params.get("targetId"));
+  }, [data]);
 
   const screenProps = {
     data,
