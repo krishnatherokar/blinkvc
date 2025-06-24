@@ -1,27 +1,35 @@
 "use client";
-import "@/app/globals.css";
-
-import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  useUser,
-} from "@clerk/nextjs";
+import { SignedIn, UserButton } from "@clerk/nextjs";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { dark } from "@clerk/themes";
 
 const Navbar = () => {
-  const { user } = useUser();
+  const [theme, setTheme] = useState<typeof dark | undefined>(undefined);
+
+  useEffect(() => {
+    const darkMode = window.matchMedia("(prefers-color-scheme: dark)");
+    const listener = (e: MediaQueryListEvent) => {
+      setTheme(e.matches ? dark : undefined);
+    };
+
+    setTheme(darkMode.matches ? dark : undefined);
+    darkMode.addEventListener("change", listener);
+    return () => darkMode.removeEventListener("change", listener);
+  }, []);
 
   return (
-    <header className="text-md text-gray-400 fixed w-full top-0 left-0 flex justify-end items-center p-4 gap-4 h-16">
-      <SignedOut>
-        <SignInButton>Sign In</SignInButton>
-        <SignUpButton>Sign Up</SignUpButton>
-      </SignedOut>
+    <header className="text-md bg-neutral-200 dark:bg-neutral-900 dark:text-gray-400 fixed w-full md:w-2xl md:rounded-tl-xl bottom-0 right-0 flex justify-evenly items-center p-4 gap-4 h-16 z-4">
+      <Link href={"/"}>Home</Link>
+      <Link href={"/connect"}>Connect</Link>
+      <Link href={"/call/missed"}>Calls</Link>
+      <Link href={"/requests"}>Requests</Link>
       <SignedIn>
-        Hello {user?.username}
-        <UserButton />
+        <UserButton
+          userProfileMode="navigation"
+          userProfileUrl={`${process.env.NEXT_PUBLIC_CLERK_URL}/user`}
+          appearance={{ baseTheme: theme }}
+        />
       </SignedIn>
     </header>
   );

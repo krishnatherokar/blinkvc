@@ -25,6 +25,12 @@ const page = () => {
 
   return (
     <>
+      <Link
+        className="px-4 py-2 mx-1 mb-4 rounded-md bg-blue-500"
+        href={"/call/new"}
+      >
+        Call a Friend
+      </Link>
       <button
         className="px-4 py-2 mx-1 rounded-md bg-red-500"
         onClick={clearMissedCalls}
