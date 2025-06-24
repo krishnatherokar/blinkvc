@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs";
 interface UserContextType {
   user: any;
   loading: boolean;
+  refreshUser: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -14,6 +15,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const { isSignedIn } = useUser();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [count, setCount] = useState(0);
+
+  const refreshUser = () => setCount((count) => count + 1);
 
   const fetchUser = async () => {
     try {
@@ -33,10 +37,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isSignedIn) fetchUser();
-  }, [isSignedIn]);
+  }, [isSignedIn, count]);
 
   return (
-    <UserContext.Provider value={{ user, loading }}>
+    <UserContext.Provider value={{ user, loading, refreshUser }}>
       {children}
     </UserContext.Provider>
   );
