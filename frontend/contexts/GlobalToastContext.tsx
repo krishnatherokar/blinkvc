@@ -10,12 +10,13 @@ import React, {
 
 type messageType = {
   callerId?: string;
-  alertType?: string;
+  toastType?: string;
   text: string;
 };
 
 type ToastContextType = {
   triggerToast: (message: messageType) => void;
+  errorToast: (err: any) => void;
 };
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -23,16 +24,24 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [message, setMessage] = useState<messageType | null>(null);
 
+  const errorToast = (err: any) => {
+    setMessage({
+      toastType: "error",
+      text: err.response?.data || err.message,
+    });
+  };
+
   useEffect(() => {
     if (!message) return;
-    const timer = setTimeout(() => setMessage(null), 10000);
+    let t = message.callerId ? 15000 : 3000;
+    const timer = setTimeout(() => setMessage(null), t);
     return () => clearTimeout(timer);
   }, [message]);
 
   const toastProps = { message, setMessage };
 
   return (
-    <ToastContext.Provider value={{ triggerToast: setMessage }}>
+    <ToastContext.Provider value={{ triggerToast: setMessage, errorToast }}>
       {children}
       <Toast {...toastProps} />
     </ToastContext.Provider>

@@ -1,19 +1,42 @@
 "use client";
+import { useToast } from "@/contexts/GlobalToastContext";
 import { useUserContext } from "@/contexts/UserContext";
 import axios from "axios";
-import { useRef } from "react";
 
 type userArrayElement = { clerkId: String; username: String };
 
 const page = () => {
-  const { user, loading } = useUserContext();
+  const { user, loading, refreshUser } = useUserContext();
+  const { triggerToast, errorToast } = useToast();
 
   const rejectReq = async (targetId: String) => {
-    await axios.post("/api/user/rejectreq", { targetId });
+    try {
+      triggerToast({
+        toastType: "info",
+        text: "Rejecting request...",
+      });
+      await axios.post("/api/user/rejectreq", { targetId });
+
+      refreshUser();
+      triggerToast({ toastType: "success", text: "Request rejected!" });
+    } catch (err) {
+      errorToast(err);
+    }
   };
 
   const acceptReq = async (targetId: String) => {
-    await axios.post("/api/user/acceptreq", { targetId });
+    try {
+      triggerToast({
+        toastType: "info",
+        text: "Accepting request...",
+      });
+      await axios.post("/api/user/acceptreq", { targetId });
+
+      refreshUser();
+      triggerToast({ toastType: "success", text: "Request accepted!" });
+    } catch (err) {
+      errorToast(err);
+    }
   };
 
   if (loading) return <>Loading...</>;

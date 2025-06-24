@@ -1,3 +1,6 @@
+"use client";
+import { useRouter } from "next/navigation";
+
 const VideoScreen = ({
   data,
   localvideoRef,
@@ -9,6 +12,7 @@ const VideoScreen = ({
   remotevideoRef: React.RefObject<HTMLVideoElement | null>;
   setCount?: React.Dispatch<React.SetStateAction<number>>;
 }) => {
+  const router = useRouter();
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8">
       <p className="mt-4 text-lg text-gray-700">{data}</p>
@@ -36,6 +40,12 @@ const VideoScreen = ({
           className="m-4 w-full max-w-md rounded-lg"
         />
       </section>
+      <button
+        onClick={() => router.back()}
+        className="m-4 px-6 py-3 bg-red-500 rounded-lg"
+      >
+        End Call
+      </button>
     </main>
   );
 };

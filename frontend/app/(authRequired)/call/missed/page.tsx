@@ -1,4 +1,5 @@
 "use client";
+import { useToast } from "@/contexts/GlobalToastContext";
 import { useUserContext } from "@/contexts/UserContext";
 import axios from "axios";
 import Link from "next/link";
@@ -6,9 +7,18 @@ import Link from "next/link";
 type userArrayElement = { clerkId: String; username: String };
 
 const page = () => {
-  const { user, loading } = useUserContext();
+  const { user, loading, refreshUser } = useUserContext();
+  const { triggerToast, errorToast } = useToast();
   const clearMissedCalls = async () => {
-    await axios.post("/api/call/clearmissedcalls");
+    try {
+      triggerToast({ toastType: "info", text: "Clearing missed calls..." });
+      await axios.post("/api/call/clearmissedcalls");
+
+      refreshUser();
+      triggerToast({ toastType: "success", text: "Missed calls cleared!" });
+    } catch (err: any) {
+      errorToast(err);
+    }
   };
 
   if (loading) return <>Loading...</>;

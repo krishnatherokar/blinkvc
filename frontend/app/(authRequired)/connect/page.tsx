@@ -1,4 +1,5 @@
 "use client";
+import { useToast } from "@/contexts/GlobalToastContext";
 import { useUserContext } from "@/contexts/UserContext";
 import axios from "axios";
 import { useRef } from "react";
@@ -6,17 +7,41 @@ import { useRef } from "react";
 type userArrayElement = { clerkId: String; username: String };
 
 const page = () => {
-  const { user, loading } = useUserContext();
+  const { user, loading, refreshUser } = useUserContext();
   const inputref = useRef<HTMLInputElement>(null);
+  const { triggerToast, errorToast } = useToast();
 
   const sendReq = async () => {
-    await axios.post("/api/user/sendreq", {
-      targetUsername: inputref.current?.value,
-    });
+    try {
+      let targetUsername = inputref.current?.value;
+      triggerToast({
+        toastType: "info",
+        text: `Sending friend request to @${targetUsername}`,
+      });
+      await axios.post("/api/user/sendreq", {
+        targetUsername,
+      });
+
+      refreshUser();
+      triggerToast({ toastType: "success", text: "Request sent!" });
+    } catch (err) {
+      errorToast(err);
+    }
   };
 
   const unsendReq = async (targetId: String) => {
-    await axios.post("/api/user/unsendreq", { targetId });
+    try {
+      triggerToast({
+        toastType: "info",
+        text: "Unsending request...",
+      });
+      await axios.post("/api/user/unsendreq", { targetId });
+
+      refreshUser();
+      triggerToast({ toastType: "success", text: "Request unsent!" });
+    } catch (err) {
+      errorToast(err);
+    }
   };
 
   if (loading) return <>Loading...</>;
