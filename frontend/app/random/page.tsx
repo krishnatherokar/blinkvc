@@ -5,6 +5,7 @@ import { endVideoCall } from "@/utils/setupVideoCall";
 import { useWSContext } from "@/contexts/WSContext";
 import { askMediaAccess } from "@/utils/askMediaAccess";
 import VideoScreen from "@/components/VideoScreen";
+import { displayVideo } from "@/utils/displayLocalVideo";
 
 export default function Home() {
   const localvideoRef = useRef<HTMLVideoElement | null>(null);
@@ -36,6 +37,8 @@ export default function Home() {
         peerconnection
       );
     };
+
+    displayVideo(remotevideoRef, localStreamRef);
 
     ws.send(JSON.stringify({ type: "random-call" }));
     ws.addEventListener("message", handleMessages);

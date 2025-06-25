@@ -10,6 +10,9 @@ export const setupVideoCall = async (
     iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
   });
 
+  localStreamRef.current?.getTracks().forEach((track) => track.stop());
+  // stop the local stream if already playing
+
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true,
@@ -21,11 +24,16 @@ export const setupVideoCall = async (
     peerconnection.current?.addTrack(track, localStream);
   });
 
-  if (localvideoRef.current) localvideoRef.current.srcObject = localStream;
+  if (localvideoRef.current) {
+    localvideoRef.current.muted = true;
+    localvideoRef.current.srcObject = localStream;
+  }
 
   peerconnection.current.ontrack = (event) => {
-    if (remotevideoRef.current)
+    if (remotevideoRef.current) {
+      remotevideoRef.current.muted = false;
       remotevideoRef.current.srcObject = event.streams[0];
+    }
   };
 
   peerconnection.current.onicecandidate = (event) => {

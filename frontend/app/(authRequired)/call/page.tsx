@@ -7,6 +7,7 @@ import { askMediaAccess } from "@/utils/askMediaAccess";
 import VideoScreen from "@/components/VideoScreen";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
+import { displayVideo } from "@/utils/displayLocalVideo";
 
 function Main() {
   const localvideoRef = useRef<HTMLVideoElement | null>(null);
@@ -39,6 +40,8 @@ function Main() {
         peerconnection
       );
     };
+
+    displayVideo(remotevideoRef, localStreamRef);
 
     const type = params.get("type");
     const targetId = params.get("targetId");
