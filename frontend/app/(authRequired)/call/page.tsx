@@ -19,15 +19,21 @@ function Main() {
   const { ws } = useWSContext();
 
   const params = useSearchParams();
+  const type = params.get("type");
+  const targetId = params.get("targetId");
 
   useEffect(() => {
-    askMediaAccess(setMediaAccess);
+    if (!type || !targetId) return;
 
-    if (ws?.readyState != WebSocket.OPEN || !params) return;
+    askMediaAccess(setMediaAccess);
     if (!mediaAccess) {
       setData("Camera and Mic permission denied");
       return;
     } else setData("Loading...");
+
+    displayVideo(remotevideoRef, localStreamRef);
+
+    if (ws?.readyState != WebSocket.OPEN) return;
 
     const handleMessages = (event: MessageEvent) => {
       handleWebSocket(
@@ -41,11 +47,6 @@ function Main() {
       );
     };
 
-    displayVideo(remotevideoRef, localStreamRef);
-
-    const type = params.get("type");
-    const targetId = params.get("targetId");
-
     ws.send(JSON.stringify({ type, targetId }));
     ws.addEventListener("message", handleMessages);
 
@@ -54,7 +55,7 @@ function Main() {
       ws.send(JSON.stringify({ type: "end-call" }));
       endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
     };
-  }, [ws?.readyState, mediaAccess, params]);
+  }, [ws?.readyState, mediaAccess, type, targetId]);
 
   useEffect(() => {
     const sendMissedCall = async (targetId: string | null) => {

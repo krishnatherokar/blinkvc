@@ -20,11 +20,14 @@ export default function Home() {
   useEffect(() => {
     askMediaAccess(setMediaAccess);
 
-    if (ws?.readyState != WebSocket.OPEN) return;
     if (!mediaAccess) {
       setData("Camera and Mic permission denied");
       return;
     } else setData("Loading...");
+
+    displayVideo(remotevideoRef, localStreamRef);
+
+    if (ws?.readyState != WebSocket.OPEN) return;
 
     const handleMessages = (event: MessageEvent) => {
       handleWebSocket(
@@ -37,8 +40,6 @@ export default function Home() {
         peerconnection
       );
     };
-
-    displayVideo(remotevideoRef, localStreamRef);
 
     ws.send(JSON.stringify({ type: "random-call" }));
     ws.addEventListener("message", handleMessages);
