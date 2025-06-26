@@ -52,6 +52,7 @@ export default function Home() {
 
   const screenProps = {
     data,
+    localStreamRef,
     localvideoRef,
     remotevideoRef,
     setCount,

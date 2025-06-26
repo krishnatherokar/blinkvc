@@ -66,6 +66,7 @@ function Main() {
 
   const screenProps = {
     data,
+    localStreamRef,
     localvideoRef,
     remotevideoRef,
   };
