@@ -17,11 +17,6 @@ export default function ProtectedPage({
 
   if (!isLoaded) return null;
 
-  if (isSignedIn)
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center p-8">
-        {children}
-      </main>
-    );
+  if (isSignedIn) return children;
   return null;
 }

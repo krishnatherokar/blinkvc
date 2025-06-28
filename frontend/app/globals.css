@@ -3,3 +3,13 @@
 body {
   font-family: var(--font-sans);
 }
+
+*:focus {
+  outline: none;
+}
+
+::-webkit-scrollbar {
+  background: transparent;
+  width: 0;
+  height: 0;
+}

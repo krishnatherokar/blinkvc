@@ -18,18 +18,18 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <ToastProvider>
-    <WebSocketProvider>
-    <UserProvider>
-      <html lang="en">
-        <body className="bg-white text-black dark:bg-gray-900 dark:text-white">
-          <Navbar />
-          {children}
-        </body>
-      </html>
-    </UserProvider>
-    </WebSocketProvider>
-    </ToastProvider>
+      <ToastProvider>
+        <WebSocketProvider>
+          <UserProvider>
+            <html lang="en">
+              <body className="bg-white text-neutral-800 dark:bg-black dark:text-white">
+                <Navbar />
+                {children}
+              </body>
+            </html>
+          </UserProvider>
+        </WebSocketProvider>
+      </ToastProvider>
     </ClerkProvider>
   );
 }

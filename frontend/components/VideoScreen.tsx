@@ -1,6 +1,10 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { AiOutlineAudio, AiOutlineAudioMuted } from "react-icons/ai";
+import { LuVideo, LuVideoOff } from "react-icons/lu";
+import { MdOutlineCallEnd } from "react-icons/md";
+import { RxReload, RxSpeakerLoud, RxSpeakerOff } from "react-icons/rx";
 
 const VideoScreen = ({
   data,
@@ -62,27 +66,30 @@ const VideoScreen = ({
 
   return (
     <main>
+      {/* Background video */}
       <video
         ref={remotevideoRef}
         autoPlay
         playsInline
-        className="fixed z-6 top-0 left-0 bg-black w-screen h-screen object-cover"
+        className="fixed z-6 top-0 left-0 bg-white dark:bg-black w-screen h-screen object-cover"
       />
+
+      {/* Top section */}
 
       <section
         className={`fixed z-8 top-0 left-0 w-screen flex ${
-          data == "connected" ? "bg-none" : "bg-neutral-900"
+          data == "connected" ? "bg-none" : "bg-neutral-100 dark:bg-neutral-900"
         }  sm:bg-transparent`}
       >
-        {data == "connected" && (
-          <video
-            onClick={() => swapVideo()}
-            ref={localvideoRef}
-            autoPlay
-            playsInline
-            className="max-w-1/2 max-h-80 sm:max-w-xs object-contain rounded-br-2xl"
-          />
-        )}
+        <video
+          onClick={() => swapVideo()}
+          ref={localvideoRef}
+          autoPlay
+          playsInline
+          className={`${
+            data == "connected" ? "" : "hidden"
+          } max-w-1/2 min-w-1/2 max-h-80 sm:max-w-xs sm:min-w-3xs object-contain rounded-br-2xl`}
+        />
 
         <section
           className={`flex-1 ${
@@ -92,50 +99,48 @@ const VideoScreen = ({
           BlinkVC
         </section>
 
+        {/* Dummy transparent section */}
+
         <section className="flex-0 sm:flex-1 sm:min-w-20 md:max-w-none"></section>
 
         <section className="flex-1 max-w-xs md:min-w-xs">
-          <section className="bg-neutral-900 flex justify-evenly w-full rounded-bl-2xl p-4">
+          <section className="bg-neutral-100 dark:bg-neutral-900 flex justify-evenly w-full rounded-bl-2xl p-4 text-2xl">
             <button onClick={toggleVideo}>
-              {isVideoOn ? <>V off</> : <>V on</>}
+              {isVideoOn ? <LuVideo /> : <LuVideoOff />}
             </button>
             <button onClick={toggleAudio}>
-              {isAudioOn ? <>A off</> : <>A on</>}
+              {isAudioOn ? <AiOutlineAudio /> : <AiOutlineAudioMuted />}
             </button>
             <button onClick={toggleMute}>
-              {isMuted ? <>Unmute</> : <>Mute</>}
+              {isMuted ? <RxSpeakerOff /> : <RxSpeakerLoud />}
             </button>
           </section>
         </section>
       </section>
 
-      <section className="fixed flex z-8 bottom-0 right-0 w-screen sm:w-sm rounded-t-2xl sm:rounded-tr-none bg-neutral-900">
-        {data == "connected" ? (
-          <div className="flex-1 flex items-center justify-center text-lg">
-            Chatbox (in future updates)
-          </div>
-        ) : (
-          <div className="flex-1 flex items-center justify-center text-lg">
-            {data}
-          </div>
-        )}
+      {/* Bottom section */}
 
-        {setCount ? (
-          <button
-            onClick={() => setCount((count: number) => count + 1)}
-            className="px-4 py-2 m-3 bg-blue-600 rounded-lg"
-          >
-            Refresh
-          </button>
-        ) : (
-          <button
-            onClick={() => router.back()}
-            className="px-4 py-2 m-3 bg-red-500 rounded-lg"
-          >
-            End Call
-          </button>
-        )}
+      <section className="fixed z-8 bottom-0 right-0 w-screen sm:w-sm rounded-t-2xl sm:rounded-tr-none bg-neutral-100 dark:bg-neutral-900 text-lg p-4 text-center">
+        {data == "connected" ? <>Chatbox (in future updates)</> : data}
       </section>
+
+      {/* Refresh and end call buttons */}
+
+      {setCount ? (
+        <button
+          onClick={() => setCount((count: number) => count + 1)}
+          className="fixed z-7 bottom-20 right-2 p-3 rounded-xl text-white bg-blue-700 text-2xl"
+        >
+          <RxReload />
+        </button>
+      ) : (
+        <button
+          onClick={() => router.back()}
+          className="fixed z-7 bottom-20 right-2 p-3 rounded-xl text-white bg-red-500 text-2xl"
+        >
+          <MdOutlineCallEnd />
+        </button>
+      )}
     </main>
   );
 };

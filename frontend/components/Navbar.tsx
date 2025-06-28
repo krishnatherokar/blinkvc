@@ -3,6 +3,9 @@ import { SignedIn, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { dark } from "@clerk/themes";
+import { MdOutlineCall } from "react-icons/md";
+import { RiHomeLine } from "react-icons/ri";
+import { AiOutlineUserAdd } from "react-icons/ai";
 
 const Navbar = () => {
   const [theme, setTheme] = useState<typeof dark | undefined>(undefined);
@@ -19,17 +22,24 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header className="text-md bg-neutral-200 dark:bg-neutral-900 dark:text-gray-400 fixed w-full md:w-2xl md:rounded-tl-xl bottom-0 right-0 flex justify-evenly items-center p-4 gap-4 h-16 z-4">
-      <Link href={"/"}>Home</Link>
-      <Link href={"/connect"}>Connect</Link>
-      <Link href={"/call/missed"}>Calls</Link>
-      <Link href={"/requests"}>Requests</Link>
+    <header className="text-md bg-neutral-100 dark:bg-neutral-900 rounded-t-2xl dark:text-gray-400 fixed w-full sm:w-sm sm:rounded-tl-2xl sm:rounded-tr-none bottom-0 right-0 flex justify-evenly items-center p-4 gap-4 h-16 z-4">
+      <Link href={"/"}>
+        <RiHomeLine className="h-8 w-8" />
+      </Link>
+      <Link href={"/requests"}>
+        <AiOutlineUserAdd className="h-8 w-8" />
+      </Link>
+      <Link href={"/call"}>
+        <MdOutlineCall className="h-8 w-8" />
+      </Link>
       <SignedIn>
-        <UserButton
-          userProfileMode="navigation"
-          userProfileUrl={`${process.env.NEXT_PUBLIC_CLERK_URL}/user`}
-          appearance={{ baseTheme: theme }}
-        />
+        <div className="scale-125 mt-1">
+          <UserButton
+            userProfileMode="navigation"
+            userProfileUrl={`${process.env.NEXT_PUBLIC_CLERK_URL}/user`}
+            appearance={{ baseTheme: theme }}
+          />
+        </div>
       </SignedIn>
     </header>
   );

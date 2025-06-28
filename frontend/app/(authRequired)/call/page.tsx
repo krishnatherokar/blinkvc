@@ -8,6 +8,7 @@ import VideoScreen from "@/components/VideoScreen";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { displayVideo } from "@/utils/displayLocalVideo";
+import CallLayout from "./CallLayout";
 
 function Main() {
   const localvideoRef = useRef<HTMLVideoElement | null>(null);
@@ -72,7 +73,7 @@ function Main() {
     remotevideoRef,
   };
 
-  return <VideoScreen {...screenProps} />;
+  return type && targetId ? <VideoScreen {...screenProps} /> : <CallLayout />;
 }
 
 export default function Page() {
