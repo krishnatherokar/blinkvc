@@ -54,7 +54,10 @@ const Toast = ({
   return (
     <>
       {message?.callerId && (
-        <div className="fixed w-screen sm:w-120 top-0 right-0 z-10">
+        <div
+          className="fixed w-screen top-0 right-0 z-10
+          sm:w-120"
+        >
           <div className="bg-gray-800 text-white p-4 m-2 rounded-xl">
             <div className="pb-4 mx-1">{message.text}</div>
             <div className="flex w-full">
@@ -76,10 +79,14 @@ const Toast = ({
       )}
       {message?.toastType && (
         <div
-          className="fixed w-screen sm:w-120 top-0 right-0 z-10"
+          className="fixed z-10 top-0 right-0 w-screen
+          sm:w-120"
           onClick={() => setMessage(null)}
         >
-          <div className="bg-white dark:bg-black m-2 rounded-xl">
+          <div
+            className="bg-white m-2 rounded-xl
+            dark:bg-black"
+          >
             {renderToast(message)}
           </div>
         </div>

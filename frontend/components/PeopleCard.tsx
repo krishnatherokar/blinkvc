@@ -37,7 +37,9 @@ export function NoPeople({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-2/3 flex flex-col justify-center text-center text-neutral-300 dark:text-neutral-700 p-4">
+    <div
+      className="h-2/3 flex flex-col justify-center text-center text-neutral-300
+      dark:text-neutral-700 p-4">
       {children}
     </div>
   );

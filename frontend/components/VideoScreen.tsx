@@ -113,15 +113,17 @@ const VideoScreen = ({
         onClick={() => setIsChatVisible(false)}
         autoPlay
         playsInline
-        className="fixed z-6 top-0 left-0 bg-white dark:bg-black w-screen h-screen object-cover"
+        className="fixed z-6 top-0 left-0 bg-white w-screen h-screen object-cover
+        dark:bg-black"
       />
 
       {/* Top section */}
 
       <section
-        className={`fixed z-8 top-0 left-0 w-screen flex ${
+        className={`${
           data == "connected" ? "bg-none" : "bg-neutral-100 dark:bg-neutral-900"
-        }  sm:bg-transparent`}
+        }  fixed z-8 top-0 left-0 w-screen flex
+        sm:bg-transparent`}
       >
         <video
           onClick={() => swapVideo()}
@@ -130,19 +132,26 @@ const VideoScreen = ({
           playsInline
           className={`${
             data == "connected" ? "" : "hidden"
-          } max-w-1/2 min-w-1/2 max-h-80 sm:max-w-xs sm:min-w-3xs object-contain rounded-br-2xl`}
+          } max-w-1/2 min-w-1/2 max-h-80 object-contain rounded-br-2xl
+          sm:max-w-xs sm:min-w-3xs`}
         />
 
         {/* Dummy transparent section */}
 
         <section
-          className={`${
-            data == "connected" ? "" : "flex-1"
-          } flex-0 sm:flex-1 sm:min-w-20 md:max-w-none`}
+          className={`${data == "connected" ? "" : "flex-1"} flex-0
+          sm:flex-1 sm:min-w-20
+          md:max-w-none`}
         ></section>
 
-        <section className="flex-1 max-w-xs md:min-w-xs">
-          <section className="bg-neutral-100 dark:bg-neutral-900 flex justify-evenly w-full rounded-bl-2xl p-4 text-2xl">
+        <section
+          className="flex-1 max-w-xs
+          md:min-w-xs"
+        >
+          <section
+            className="bg-neutral-100 flex justify-evenly w-full rounded-bl-2xl p-4 text-2xl
+            dark:bg-neutral-900"
+          >
             <button onClick={toggleVideo}>
               {isVideoOn ? <LuVideo /> : <LuVideoOff />}
             </button>
@@ -158,7 +167,11 @@ const VideoScreen = ({
 
       {/* Bottom section */}
 
-      <section className="fixed z-8 bottom-0 right-0 w-screen sm:w-sm rounded-t-2xl sm:rounded-tr-none bg-neutral-100 dark:bg-neutral-900 text-lg">
+      <section
+        className="fixed z-8 bottom-0 right-0 w-screen text-lg bg-neutral-100
+        sm:w-sm rounded-t-2xl sm:rounded-tr-none
+        dark:bg-neutral-900"
+      >
         {data == "connected" ? (
           <div
             className="p-4 text-center"
@@ -182,21 +195,24 @@ const VideoScreen = ({
       <section
         className={`${
           isChatVisible ? "" : "hidden"
-        } fixed z-9 bottom-0 right-0 w-screen sm:w-sm rounded-t-2xl sm:rounded-tr-none bg-neutral-100 dark:bg-neutral-900`}
+        } fixed z-9 bottom-0 right-0 w-screen rounded-t-2xl bg-neutral-100
+        sm:w-sm sm:rounded-tr-none
+        dark:bg-neutral-900`}
       >
-        <div className="h-40 overflow-y-scroll rounded-xl mx-2 mt-2 py-1 bg-white dark:bg-black">
+        <div
+          className="h-40 overflow-y-scroll rounded-xl mx-2 mt-2 py-1 bg-white
+          dark:bg-black"
+        >
           {chat ? (
             <>
               {chat.map((message: chatType, i: number) => (
                 <div
                   key={i}
-                  className={`w-fit max-w-4/5 px-3 py-2 m-2
-                        ${
-                          message.sender == "You"
-                            ? "ml-auto bg-neutral-100 dark:bg-neutral-900 rounded-br-none"
-                            : "mr-auto text-white bg-blue-600 rounded-bl-none"
-                        }
-                         rounded-xl`}
+                  className={`${
+                    message.sender == "You"
+                      ? "ml-auto rounded-br-none bg-neutral-100 dark:bg-neutral-900"
+                      : "mr-auto rounded-bl-none text-white bg-blue-600"
+                  } w-fit max-w-4/5 px-3 py-2 m-2 rounded-xl`}
                 >
                   {message.text}
                 </div>
@@ -204,7 +220,10 @@ const VideoScreen = ({
               <div ref={bottomRef} />
             </>
           ) : (
-            <div className="flex flex-col h-full text-center justify-center text-neutral-300 dark:text-neutral-700 p-4">
+            <div
+              className="flex flex-col h-full text-center justify-center text-neutral-300 p-4
+              dark:text-neutral-700"
+            >
               No messages
             </div>
           )}
@@ -222,7 +241,8 @@ const VideoScreen = ({
             type="text"
             maxLength={20}
             placeholder="Type here..."
-            className="flex-1 rounded-sm p-2 m-2 bg-white dark:bg-black"
+            className="flex-1 rounded-sm p-2 m-2 bg-white
+            dark:bg-black"
             autoComplete="off"
             required
           />

@@ -22,7 +22,10 @@ export default function RootLayout({
         <WebSocketProvider>
           <UserProvider>
             <html lang="en">
-              <body className="bg-white text-neutral-800 dark:bg-black dark:text-white">
+              <body
+                className="bg-white text-neutral-800
+              dark:bg-black dark:text-white"
+              >
                 <Navbar />
                 {children}
               </body>

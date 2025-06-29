@@ -22,7 +22,12 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header className="text-md bg-neutral-100 dark:bg-neutral-900 rounded-t-2xl dark:text-gray-400 fixed w-full sm:w-sm sm:rounded-tl-2xl sm:rounded-tr-none bottom-0 right-0 flex justify-evenly items-center p-4 gap-4 h-16 z-4">
+    <header
+      className="fixed z-4 w-full h-16 text-md bg-neutral-100 rounded-t-2xl p-4
+      dark:bg-neutral-900 dark:text-gray-400
+      sm:w-sm sm:rounded-tl-2xl sm:rounded-tr-none
+      bottom-0 right-0 flex justify-evenly items-center gap-4"
+    >
       <Link href={"/"}>
         <RiHomeLine className="h-8 w-8" />
       </Link>

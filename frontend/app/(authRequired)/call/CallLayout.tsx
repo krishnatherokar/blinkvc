@@ -62,7 +62,9 @@ const CallLayout = () => {
       {!newCallScreen && (
         <button
           onClick={() => setNewCallScreen(true)}
-          className="fixed z-4 bottom-20 right-2 p-3 sm:hidden rounded-lg bg-blue-700 text-white"
+          className="fixed z-4 bottom-20 right-2
+          p-3 rounded-lg bg-blue-700 text-white
+          sm:hidden"
         >
           <MdOutlineAddIcCall className="h-8 w-8" />
         </button>
@@ -72,7 +74,9 @@ const CallLayout = () => {
       <section
         className={`${
           newCallScreen ? "hidden" : "block"
-        } sm:block flex-1 h-screen w-full overflow-y-scroll pb-28 sm:border-r-1 dark:border-neutral-800 border-neutral-200
+        } flex-1 h-screen w-full overflow-y-scroll pb-28 border-neutral-200
+        sm:block sm:border-r-1
+        dark:border-neutral-800 
       `}
       >
         <StickyTitle>
@@ -109,16 +113,17 @@ const CallLayout = () => {
       <section
         className={`${
           newCallScreen ? "block" : "hidden"
-        } sm:block flex-1 h-screen w-full overflow-y-scroll pb-28
-      `}
+        } flex-1 h-screen w-full overflow-y-scroll pb-28
+        sm:block`}
       >
         <StickyTitle>
           <MdArrowBack
-            className="h-6 w-6 float-start font-light sm:hidden fill-blue-500"
+            className="h-6 w-6 float-start font-light fill-blue-500
+            sm:hidden"
             onClick={() => setNewCallScreen(false)}
           />
           Friends
-          <span className="sm:hidden float-end">&emsp;</span>
+          <span className="float-end sm:hidden">&emsp;</span>
         </StickyTitle>
         {user.friends.length ? (
           <>

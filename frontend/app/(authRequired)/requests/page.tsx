@@ -92,7 +92,10 @@ const page = () => {
       <section
         className={`${
           sentReqPage ? "hidden" : "flex"
-        } sm:flex flex-1 flex-col h-screen w-full overflow-y-scroll sm:border-r-1 pb-28 dark:border-neutral-800 border-neutral-200`}
+        } flex-1 flex-col h-screen w-full pb-28
+        overflow-y-scroll border-neutral-200
+        sm:flex sm:border-r-1 
+        dark:border-neutral-800`}
       >
         <div className="min-h-60 flex-1 flex flex-col justify-center">
           <div className="text-center w-full p-4">
@@ -103,9 +106,11 @@ const page = () => {
               }}
             >
               <input
-                className="rounded-md p-2 bg-neutral-100 dark:bg-neutral-900 w-full max-w-80"
+                className="rounded-md p-2 bg-neutral-100 w-full max-w-80
+                dark:bg-neutral-900"
                 ref={inputRef}
                 type="text"
+                maxLength={20}
                 placeholder="Username"
                 required
               />
@@ -118,7 +123,8 @@ const page = () => {
               </button>
             </form>
             <button
-              className="px-4 py-2 my-2 sm:hidden text-blue-500 w-full max-w-80"
+              className="px-4 py-2 my-2 text-blue-500 w-full max-w-80
+              sm:hidden"
               onClick={() => setSentReqPage(true)}
             >
               Show Sent Requests
@@ -155,12 +161,13 @@ const page = () => {
       <section
         className={`${
           sentReqPage ? "block" : "hidden"
-        } sm:block flex-1 h-screen w-full overflow-y-scroll pb-28
-      `}
+        } flex-1 h-screen w-full overflow-y-scroll pb-28
+        sm:block`}
       >
         <StickyTitle>
           <MdArrowBack
-            className="h-6 w-6 float-start font-light sm:hidden fill-blue-500"
+            className="h-6 w-6 float-start font-light fill-blue-500
+            sm:hidden"
             onClick={() => setSentReqPage(false)}
           />
           Requests Sent<span className="sm:hidden float-end">&emsp;</span>
