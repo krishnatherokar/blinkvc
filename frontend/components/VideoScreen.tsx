@@ -25,6 +25,15 @@ const VideoScreen = ({
   const [isVideoSwapped, setIsVideoSwapped] = useState(false);
 
   const router = useRouter();
+
+  const reload = () => {
+    setIsAudioOn(true);
+    setIsVideoOn(true);
+    setIsMuted(false);
+    setIsVideoSwapped(false);
+    if (setCount) setCount((count: number) => count + 1);
+  };
+
   const swapVideo = () => {
     if (localvideoRef.current && remotevideoRef.current) {
       localvideoRef.current.muted = isVideoSwapped;
@@ -128,7 +137,7 @@ const VideoScreen = ({
 
       {setCount ? (
         <button
-          onClick={() => setCount((count: number) => count + 1)}
+          onClick={reload}
           className="fixed z-7 bottom-20 right-2 p-3 rounded-xl text-white bg-blue-700 text-2xl"
         >
           <RxReload />
