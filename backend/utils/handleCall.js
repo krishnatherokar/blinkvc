@@ -2,7 +2,7 @@ const sendCallReq = (socket, targetId) => {
   const targetSocket = onlineMap.get(targetId);
   if (!targetSocket) {
     socket.send(
-      JSON.stringify({ type: "call-response", response: "peer-offline" })
+      JSON.stringify({ type: "call-response", response: "Peer offline" })
     );
   } else {
     if (!checkFriends(socket, targetId)) return;
@@ -14,7 +14,7 @@ const sendCallReq = (socket, targetId) => {
         callerId: socket.userId,
       })
     );
-    socket.send(JSON.stringify({ type: "call-response", response: "ringing" }));
+    socket.send(JSON.stringify({ type: "call-response", response: "Ringing" }));
   }
 };
 
@@ -22,7 +22,7 @@ const acceptCall = (socket, targetId) => {
   const targetSocket = onlineMap.get(targetId);
   if (!targetSocket) {
     socket.send(
-      JSON.stringify({ type: "call-response", response: "peer-offline" })
+      JSON.stringify({ type: "call-response", response: "Peer offline" })
     );
   } else {
     socket.peer = targetSocket;

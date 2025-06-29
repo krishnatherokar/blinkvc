@@ -1,3 +1,4 @@
+import { chatType } from "@/components/VideoScreen";
 import { endVideoCall, setupVideoCall } from "./setupVideoCall";
 
 const handleWebSocket = async (
@@ -7,7 +8,8 @@ const handleWebSocket = async (
   localvideoRef: React.RefObject<HTMLVideoElement | null>,
   localStreamRef: React.RefObject<MediaStream | null>,
   remotevideoRef: React.RefObject<HTMLVideoElement | null>,
-  peerconnection: React.RefObject<RTCPeerConnection | null>
+  peerconnection: React.RefObject<RTCPeerConnection | null>,
+  setChat: React.Dispatch<React.SetStateAction<chatType[] | null>>
 ) => {
   const text =
     event.data instanceof Blob ? await event.data.text() : event.data;
@@ -20,9 +22,9 @@ const handleWebSocket = async (
 
     case "call-response":
       setData(data.response);
-      if (data.response == "ringing") {
+      if (data.response == "Ringing") {
         setTimeout(() => {
-          setData((data: String) => (data == "ringing" ? "Unanswered" : data));
+          setData((data: String) => (data == "Ringing" ? "Unanswered" : data));
         }, 15000);
       }
       break;
@@ -71,8 +73,16 @@ const handleWebSocket = async (
       endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
       break;
 
+    case "chat":
+      setChat((prev) =>
+        prev
+          ? [...prev, { sender: "Peer", text: data.text }]
+          : [{ sender: "Peer", text: data.text }]
+      );
+      break;
+
     default:
-      setData(data.message || "Unknown message from server");
+      setData("Unknown message from server");
   }
 };
 

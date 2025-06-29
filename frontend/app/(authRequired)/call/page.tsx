@@ -4,7 +4,7 @@ import handleWebSocket from "@/utils/handleWebSocket";
 import { endVideoCall } from "@/utils/setupVideoCall";
 import { useWSContext } from "@/contexts/WSContext";
 import { askMediaAccess } from "@/utils/askMediaAccess";
-import VideoScreen from "@/components/VideoScreen";
+import VideoScreen, { chatType } from "@/components/VideoScreen";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { displayVideo } from "@/utils/displayLocalVideo";
@@ -17,6 +17,8 @@ function Main() {
   const peerconnection = useRef<RTCPeerConnection | null>(null);
   const [data, setData] = useState("Loading...");
   const [mediaAccess, setMediaAccess] = useState(false);
+  const [chat, setChat] = useState<chatType[] | null>(null);
+
   const { ws } = useWSContext();
 
   const params = useSearchParams();
@@ -28,7 +30,7 @@ function Main() {
 
     askMediaAccess(setMediaAccess);
     if (!mediaAccess) {
-      setData("Camera and Mic permission denied");
+      setData("Camera and Mic Inaccessible");
       return;
     } else setData("Loading...");
 
@@ -44,7 +46,8 @@ function Main() {
         localvideoRef,
         localStreamRef,
         remotevideoRef,
-        peerconnection
+        peerconnection,
+        setChat
       );
     };
 
@@ -71,6 +74,9 @@ function Main() {
     localStreamRef,
     localvideoRef,
     remotevideoRef,
+    chat,
+    setChat,
+    ws,
   };
 
   return type && targetId ? <VideoScreen {...screenProps} /> : <CallLayout />;
