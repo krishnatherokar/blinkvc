@@ -21,7 +21,7 @@ const page = () => {
     try {
       if (!inputRef.current) return;
 
-      let targetUsername = inputRef.current.value;
+      let targetUsername = inputRef.current.value.toLowerCase();
       inputRef.current.value = "";
 
       triggerToast({
