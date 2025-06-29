@@ -62,9 +62,9 @@ const CallLayout = () => {
       {!newCallScreen && (
         <button
           onClick={() => setNewCallScreen(true)}
-          className="fixed z-4 bottom-20 right-2 p-3 sm:hidden rounded-xl bg-blue-700 text-2xl"
+          className="fixed z-4 bottom-20 right-2 p-3 sm:hidden rounded-lg bg-blue-700 text-white"
         >
-          <MdOutlineAddIcCall />
+          <MdOutlineAddIcCall className="h-8 w-8" />
         </button>
       )}
 

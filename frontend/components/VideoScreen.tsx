@@ -74,7 +74,7 @@ const VideoScreen = ({
   };
 
   return (
-    <main>
+    <main className="h-screen w-screen">
       {/* Background video */}
       <video
         ref={remotevideoRef}
@@ -100,17 +100,13 @@ const VideoScreen = ({
           } max-w-1/2 min-w-1/2 max-h-80 sm:max-w-xs sm:min-w-3xs object-contain rounded-br-2xl`}
         />
 
-        <section
-          className={`flex-1 ${
-            data == "connected" ? "hidden" : ""
-          } sm:hidden flex items-center justify-center text-xl font-bold text-blue-600`}
-        >
-          BlinkVC
-        </section>
-
         {/* Dummy transparent section */}
 
-        <section className="flex-0 sm:flex-1 sm:min-w-20 md:max-w-none"></section>
+        <section
+          className={`${
+            data == "connected" ? "" : "flex-1"
+          } flex-0 sm:flex-1 sm:min-w-20 md:max-w-none`}
+        ></section>
 
         <section className="flex-1 max-w-xs md:min-w-xs">
           <section className="bg-neutral-100 dark:bg-neutral-900 flex justify-evenly w-full rounded-bl-2xl p-4 text-2xl">
@@ -138,16 +134,16 @@ const VideoScreen = ({
       {setCount ? (
         <button
           onClick={reload}
-          className="fixed z-7 bottom-20 right-2 p-3 rounded-xl text-white bg-blue-700 text-2xl"
+          className="fixed z-7 bottom-20 right-2 p-3 rounded-lg text-white bg-blue-700"
         >
-          <RxReload />
+          <RxReload className="h-8 w-8" />
         </button>
       ) : (
         <button
           onClick={() => router.back()}
-          className="fixed z-7 bottom-20 right-2 p-3 rounded-xl text-white bg-red-500 text-2xl"
+          className="fixed z-7 bottom-20 right-2 p-3 rounded-lg text-white bg-red-500"
         >
-          <MdOutlineCallEnd />
+          <MdOutlineCallEnd className="h-8 w-8" />
         </button>
       )}
     </main>
