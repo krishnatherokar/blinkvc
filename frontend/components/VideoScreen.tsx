@@ -60,8 +60,8 @@ const VideoScreen = ({
 
   const swapVideo = () => {
     if (localvideoRef.current && remotevideoRef.current) {
-      localvideoRef.current.muted = isVideoSwapped;
-      remotevideoRef.current.muted = !isVideoSwapped;
+      localvideoRef.current.muted = isVideoSwapped || isMuted;
+      remotevideoRef.current.muted = !isVideoSwapped || isMuted;
       setIsVideoSwapped((prev) => !prev);
 
       let localSrc = localvideoRef.current.srcObject;
