@@ -59,6 +59,14 @@ export const setupVideoCall = async (
   };
 
   peerconnection.current.onnegotiationneeded = async () => {
+    if (peerconnection.current?.signalingState !== "stable") {
+      console.warn(
+        "Skipping negotiation due to state: ",
+        peerconnection.current?.signalingState
+      );
+      return;
+    }
+
     try {
       const offer = await peerconnection.current!.createOffer();
       await peerconnection.current!.setLocalDescription(offer);
