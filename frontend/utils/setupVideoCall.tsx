@@ -4,14 +4,11 @@ export const setupVideoCall = async (
   localvideoRef: React.RefObject<HTMLVideoElement | null>,
   remotevideoRef: React.RefObject<HTMLVideoElement | null>,
   localStreamRef: React.RefObject<MediaStream | null>,
-  role: "caller" | "callee"
+  trackReadyResolve: (() => void) | null
 ) => {
   peerconnection.current = new RTCPeerConnection({
     iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
   });
-
-  localStreamRef.current?.getTracks().forEach((track) => track.stop());
-  // stop the local stream if already playing
 
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: true,
@@ -21,7 +18,15 @@ export const setupVideoCall = async (
   localStreamRef.current = localStream;
 
   localStream.getTracks().forEach((track) => {
-    peerconnection.current?.addTrack(track, localStream);
+    const alreadyAdded = peerconnection.current
+      ?.getSenders()
+      .some((sender) => sender.track === track);
+    if (!alreadyAdded) {
+      peerconnection.current?.addTrack(track, localStream);
+      if (trackReadyResolve) trackReadyResolve();
+
+      console.log("Local track added");
+    }
   });
 
   if (localvideoRef.current) {
@@ -29,11 +34,17 @@ export const setupVideoCall = async (
     localvideoRef.current.srcObject = localStream;
   }
 
+  const remoteStream = new MediaStream();
+  if (remotevideoRef.current) {
+    remotevideoRef.current.muted = false;
+    remotevideoRef.current.srcObject = remoteStream;
+  }
+
   peerconnection.current.ontrack = (event) => {
-    if (remotevideoRef.current) {
-      remotevideoRef.current.muted = false;
-      remotevideoRef.current.srcObject = event.streams[0];
-    }
+    event.streams[0].getTracks().forEach((track) => {
+      remoteStream.addTrack(track);
+      console.log("Track received: ontrack");
+    });
   };
 
   peerconnection.current.onicecandidate = (event) => {
@@ -47,16 +58,15 @@ export const setupVideoCall = async (
     }
   };
 
-  if (role === "caller") {
-    const offer = await peerconnection.current.createOffer();
-    await peerconnection.current.setLocalDescription(offer);
-    ws.send(
-      JSON.stringify({
-        type: "offer",
-        offer,
-      })
-    );
-  }
+  peerconnection.current.onnegotiationneeded = async () => {
+    try {
+      const offer = await peerconnection.current!.createOffer();
+      await peerconnection.current!.setLocalDescription(offer);
+      ws.send(JSON.stringify({ type: "offer", offer }));
+    } catch (err) {
+      console.error("Negotiation error:", err);
+    }
+  };
 };
 
 export const endVideoCall = (

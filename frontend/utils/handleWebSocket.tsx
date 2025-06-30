@@ -1,6 +1,15 @@
 import { chatType } from "@/components/VideoScreen";
 import { endVideoCall, setupVideoCall } from "./setupVideoCall";
 
+let trackReady: Promise<void>;
+let trackReadyResolve: (() => void) | null;
+
+const resetTrackReady = () => {
+  trackReady = new Promise<void>((res) => (trackReadyResolve = res));
+};
+
+const candidateQueue: RTCIceCandidateInit[] = [];
+
 const handleWebSocket = async (
   event: MessageEvent,
   ws: WebSocket,
@@ -14,6 +23,15 @@ const handleWebSocket = async (
   const text =
     event.data instanceof Blob ? await event.data.text() : event.data;
   const data = JSON.parse(text);
+
+  const flushCandidateQueue = async () => {
+    for (const candidate of candidateQueue) {
+      await peerconnection.current?.addIceCandidate(
+        new RTCIceCandidate(candidate)
+      );
+    }
+    candidateQueue.length = 0;
+  };
 
   switch (data.type) {
     case "waiting":
@@ -30,6 +48,7 @@ const handleWebSocket = async (
       break;
 
     case "connected":
+      resetTrackReady();
       setData("connected");
       setupVideoCall(
         ws,
@@ -37,20 +56,32 @@ const handleWebSocket = async (
         localvideoRef,
         remotevideoRef,
         localStreamRef,
-        data.role
+        trackReadyResolve
+        // data.role
       );
       break;
 
     case "candidate":
-      peerconnection.current?.addIceCandidate(
-        new RTCIceCandidate(data.candidate)
-      );
+      if (peerconnection.current?.remoteDescription) {
+        try {
+          await peerconnection.current?.addIceCandidate(
+            new RTCIceCandidate(data.candidate)
+          );
+        } catch (err) {
+          console.error("Failed to add ICE candidate:", err);
+        }
+      } else {
+        candidateQueue.push(data.candidate);
+      }
       break;
 
     case "offer":
+      await trackReady;
+
       await peerconnection.current?.setRemoteDescription(
         new RTCSessionDescription(data.offer)
       );
+      console.log("Remote description set");
 
       const answer = await peerconnection.current?.createAnswer();
       peerconnection.current?.setLocalDescription(answer);
@@ -60,12 +91,23 @@ const handleWebSocket = async (
           answer,
         })
       );
+
+      await flushCandidateQueue();
       break;
 
     case "answer":
-      await peerconnection.current?.setRemoteDescription(
+      if (peerconnection.current?.signalingState != "have-local-offer") {
+        console.warn(
+          "Invalid signaling state:",
+          peerconnection.current?.signalingState
+        );
+        break;
+      }
+
+      await peerconnection.current.setRemoteDescription(
         new RTCSessionDescription(data.answer)
       );
+      await flushCandidateQueue();
       break;
 
     case "disconnected":
