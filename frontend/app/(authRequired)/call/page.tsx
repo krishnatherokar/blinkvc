@@ -13,6 +13,7 @@ import CallLayout from "./CallLayout";
 function Main() {
   const localvideoRef = useRef<HTMLVideoElement | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
+  const waitingStreamRef = useRef<MediaStream | null>(null);
   const remotevideoRef = useRef<HTMLVideoElement | null>(null);
   const peerconnection = useRef<RTCPeerConnection | null>(null);
   const [data, setData] = useState("Loading...");
@@ -34,7 +35,7 @@ function Main() {
       return;
     } else setData("Loading...");
 
-    displayVideo(remotevideoRef, localStreamRef);
+    displayVideo(remotevideoRef, waitingStreamRef);
 
     if (ws?.readyState != WebSocket.OPEN) return;
 
@@ -57,7 +58,12 @@ function Main() {
     return () => {
       ws.removeEventListener("message", handleMessages);
       ws.send(JSON.stringify({ type: "end-call" }));
-      endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
+      endVideoCall(
+        localStreamRef,
+        localvideoRef,
+        remotevideoRef,
+        waitingStreamRef
+      );
     };
   }, [ws?.readyState, mediaAccess, type, targetId]);
 

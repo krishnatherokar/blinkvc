@@ -10,12 +10,14 @@ import { displayVideo } from "@/utils/displayLocalVideo";
 export default function Home() {
   const localvideoRef = useRef<HTMLVideoElement | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
+  const waitingStreamRef = useRef<MediaStream | null>(null);
   const remotevideoRef = useRef<HTMLVideoElement | null>(null);
   const peerconnection = useRef<RTCPeerConnection | null>(null);
   const [data, setData] = useState("Loading...");
   const [count, setCount] = useState(0);
   const [mediaAccess, setMediaAccess] = useState(false);
   const [chat, setChat] = useState<chatType[] | null>(null);
+
 
   const { ws } = useWSContext();
 
@@ -27,7 +29,7 @@ export default function Home() {
       return;
     } else setData("Loading...");
 
-    displayVideo(remotevideoRef, localStreamRef);
+    displayVideo(remotevideoRef, waitingStreamRef);
 
     if (ws?.readyState != WebSocket.OPEN) return;
 
@@ -50,7 +52,12 @@ export default function Home() {
     return () => {
       ws.removeEventListener("message", handleMessages);
       ws.send(JSON.stringify({ type: "end-call" }));
-      endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
+      endVideoCall(
+        localStreamRef,
+        localvideoRef,
+        remotevideoRef,
+        waitingStreamRef
+      );
     };
   }, [count, ws?.readyState, mediaAccess]);
 

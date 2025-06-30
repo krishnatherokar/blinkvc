@@ -72,10 +72,15 @@ export const setupVideoCall = async (
 export const endVideoCall = (
   localStreamRef: React.RefObject<MediaStream | null>,
   localvideoRef: React.RefObject<HTMLVideoElement | null>,
-  remotevideoRef: React.RefObject<HTMLVideoElement | null>
+  remotevideoRef: React.RefObject<HTMLVideoElement | null>,
+  waitingStreamRef?: React.RefObject<MediaStream | null>
 ) => {
   localStreamRef.current?.getTracks().forEach((track) => track.stop());
   localStreamRef.current = null;
+  if (waitingStreamRef) {
+    waitingStreamRef.current?.getTracks().forEach((track) => track.stop());
+    waitingStreamRef.current = null;
+  }
   if (localvideoRef.current) localvideoRef.current.srcObject = null;
   if (remotevideoRef.current) remotevideoRef.current.srcObject = null;
 };
