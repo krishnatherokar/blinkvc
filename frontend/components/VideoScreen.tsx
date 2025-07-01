@@ -113,7 +113,7 @@ const VideoScreen = ({
         onClick={() => setIsChatVisible(false)}
         autoPlay
         playsInline
-        className="fixed z-6 top-0 left-0 bg-white w-screen h-screen object-cover
+        className="fixed z-6 top-0 left-0 bg-white w-screen h-screen object-cover transform scale-x-[-1]
         dark:bg-black"
       />
 
@@ -132,24 +132,21 @@ const VideoScreen = ({
           playsInline
           className={`${
             data == "connected" ? "" : "hidden"
-          } max-w-1/2 min-w-1/2 max-h-80 object-contain rounded-br-2xl
-          sm:max-w-xs sm:min-w-3xs`}
+          } max-w-50 max-h-50 object-contain rounded-bl-2xl transform scale-x-[-1]
+          sm:max-w-xs`}
         />
 
         {/* Dummy transparent section */}
-
         <section
-          className={`${data == "connected" ? "" : "flex-1"} flex-0
-          sm:flex-1 sm:min-w-20
-          md:max-w-none`}
+          className={`${data == "connected" ? "flex-0 md:flex-1" : "flex-1"}`}
         ></section>
 
         <section
-          className="flex-1 max-w-xs
-          md:min-w-xs"
+          className="flex-1
+          md:max-w-xs md:min-w-2xs"
         >
           <section
-            className="bg-neutral-100 flex justify-evenly w-full rounded-bl-2xl p-4 text-2xl
+            className="bg-neutral-100 flex justify-evenly w-full rounded-bl-2xl py-4 text-2xl
             dark:bg-neutral-900"
           >
             <button onClick={toggleVideo}>
@@ -239,7 +236,7 @@ const VideoScreen = ({
           <input
             ref={chatInputRef}
             type="text"
-            maxLength={20}
+            maxLength={60}
             placeholder="Type here..."
             className="flex-1 rounded-sm p-2 m-2 bg-white
             dark:bg-black"

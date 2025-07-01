@@ -58,17 +58,20 @@ const Toast = ({
           className="fixed w-screen top-0 right-0 z-10
           sm:w-120"
         >
-          <div className="bg-gray-800 text-white p-4 m-2 rounded-xl">
+          <div
+            className="bg-gray-200 p-4 m-2 rounded-xl
+            dark:bg-gray-800"
+          >
             <div className="pb-4 mx-1">{message.text}</div>
             <div className="flex w-full">
               <button
-                className="flex-1 px-4 py-2 mx-1 rounded-md bg-blue-500"
+                className="flex-1 px-4 py-2 mx-1 rounded-md bg-blue-500 text-white"
                 onClick={() => callPeer(message.callerId)}
               >
                 Accept
               </button>
               <button
-                className="flex-1 px-4 py-2 mx-1 rounded-md bg-red-500"
+                className="flex-1 px-4 py-2 mx-1 rounded-md bg-red-500 text-white"
                 onClick={() => setMessage(null)}
               >
                 Reject
