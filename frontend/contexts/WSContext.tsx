@@ -2,6 +2,7 @@
 import { useUser } from "@clerk/nextjs";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useToast } from "./GlobalToastContext";
+import axios from "axios";
 
 type WebSocketContextType = {
   ws: WebSocket | null;
@@ -21,9 +22,18 @@ export const WebSocketProvider = ({
   const { user, isLoaded } = useUser();
   const { triggerToast } = useToast();
 
+  const ping = async () => {
+    await axios.get(
+      process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000"
+    );
+  };
+
   useEffect(() => {
     if (!isLoaded || count > 4) return;
     // limit the number of reconnection attempts
+
+    ping();
+    // wake up the server
 
     const ws = new WebSocket(
       process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4000"
