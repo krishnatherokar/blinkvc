@@ -16,16 +16,24 @@ type userArrayElement = { clerkId: String; username: String };
 const CallLayout = () => {
   const [newCallScreen, setNewCallScreen] = useState(false);
   const { user, loading, refreshUser } = useUserContext();
-  const { triggerToast, errorToast } = useToast();
+  const { triggerToast, errorToast, confirm } = useToast();
   const router = useRouter();
 
-  const unFriend = async (targetId: String) => {
+  const unFriend = async (element: userArrayElement) => {
     try {
+      const userChoice = await confirm({
+        text: `Are you sure you want to unfriend @${element.username}?`,
+        confirmText: "Unfriend",
+        isRisky: true,
+      });
+
+      if (!userChoice) return;
+
       triggerToast({
         toastType: "info",
         text: "Unfriending...",
       });
-      await axios.post("/api/user/unfriend", { targetId });
+      await axios.post("/api/user/unfriend", { targetId: element.clerkId });
 
       refreshUser();
       triggerToast({ toastType: "success", text: "Unfriended!" });
@@ -46,7 +54,14 @@ const CallLayout = () => {
     }
   };
 
-  const callPeer = (element: userArrayElement) => {
+  const callPeer = async (element: userArrayElement) => {
+    const userChoice = await confirm({
+      text: `Start video call to @${element.username}?`,
+      confirmText: "Call",
+    });
+
+    if (!userChoice) return;
+
     triggerToast({
       toastType: "info",
       text: `Calling @${element.username}`,
@@ -136,7 +151,7 @@ const CallLayout = () => {
 
                 <AiOutlineUserDelete
                   className="h-6 w-6 ml-3 float-end fill-red-500"
-                  onClick={() => unFriend(element.clerkId)}
+                  onClick={() => unFriend(element)}
                 />
               </PeopleCard>
             ))}

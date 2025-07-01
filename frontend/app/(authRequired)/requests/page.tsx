@@ -15,7 +15,7 @@ const page = () => {
   const [sentReqPage, setSentReqPage] = useState(false);
   const { user, loading, refreshUser } = useUserContext();
   const inputRef = useRef<HTMLInputElement>(null);
-  const { triggerToast, errorToast } = useToast();
+  const { triggerToast, errorToast, confirm } = useToast();
 
   const sendReq = async () => {
     try {
@@ -41,6 +41,14 @@ const page = () => {
 
   const unsendReq = async (targetId: String) => {
     try {
+      const userChoice = await confirm({
+        text: "Are you sure you want to unsend the request",
+        confirmText: "Unsend",
+        isRisky: true,
+      });
+
+      if (!userChoice) return;
+
       triggerToast({
         toastType: "info",
         text: "Unsending request...",
@@ -56,6 +64,14 @@ const page = () => {
 
   const rejectReq = async (targetId: String) => {
     try {
+      const userChoice = await confirm({
+        text: "Are you sure you want to reject the request",
+        confirmText: "Reject",
+        isRisky: true,
+      });
+
+      if (!userChoice) return;
+
       triggerToast({
         toastType: "info",
         text: "Rejecting request...",
