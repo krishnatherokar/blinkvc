@@ -23,9 +23,9 @@ export async function GET(req: NextRequest) {
   }
 
   return Response.json({
-    friends: user.friends,
-    requests: user.requests,
-    req_sent: user.req_sent,
-    missed_calls: user.missed_calls,
+    friends: user.friends.reverse(),
+    requests: user.requests.reverse(),
+    req_sent: user.req_sent.reverse(),
+    missed_calls: user.missed_calls.reverse(),
   });
 }
