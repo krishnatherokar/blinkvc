@@ -4,6 +4,7 @@ export const setupVideoCall = async (
   localvideoRef: React.RefObject<HTMLVideoElement | null>,
   remotevideoRef: React.RefObject<HTMLVideoElement | null>,
   localStreamRef: React.RefObject<MediaStream | null>,
+  trackReady: Promise<void>,
   trackReadyResolve: (() => void) | null
 ) => {
   peerconnection.current = new RTCPeerConnection({
@@ -59,6 +60,7 @@ export const setupVideoCall = async (
   };
 
   peerconnection.current.onnegotiationneeded = async () => {
+    await trackReady;
     if (peerconnection.current?.signalingState !== "stable") {
       console.warn(
         "Skipping negotiation due to state: ",

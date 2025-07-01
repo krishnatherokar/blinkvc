@@ -56,6 +56,7 @@ const handleWebSocket = async (
         localvideoRef,
         remotevideoRef,
         localStreamRef,
+        trackReady,
         trackReadyResolve
         // data.role
       );
