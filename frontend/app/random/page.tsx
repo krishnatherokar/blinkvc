@@ -29,7 +29,7 @@ export default function Home() {
       return;
     } else setData("Loading...");
 
-    displayVideo(remotevideoRef, waitingStreamRef);
+    displayVideo(localvideoRef, waitingStreamRef);
 
     if (ws?.readyState != WebSocket.OPEN) return;
 

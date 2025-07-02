@@ -35,7 +35,7 @@ function Main() {
       return;
     } else setData("Loading...");
 
-    displayVideo(remotevideoRef, waitingStreamRef);
+    displayVideo(localvideoRef, waitingStreamRef);
 
     if (ws?.readyState != WebSocket.OPEN) return;
 

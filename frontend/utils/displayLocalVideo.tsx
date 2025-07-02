@@ -1,5 +1,5 @@
 export const displayVideo = async (
-  remotevideoRef: React.RefObject<HTMLVideoElement | null>,
+  localvide: React.RefObject<HTMLVideoElement | null>,
   waitingStreamRef: React.RefObject<MediaStream | null>
 ) => {
   const stream = waitingStreamRef.current ?? await navigator.mediaDevices.getUserMedia({
@@ -8,8 +8,8 @@ export const displayVideo = async (
   });
 
   waitingStreamRef.current = stream;
-  if (remotevideoRef.current) {
-    remotevideoRef.current.muted = true;
-    remotevideoRef.current.srcObject = stream;
+  if (localvide.current) {
+    localvide.current.muted = true;
+    localvide.current.srcObject = stream;
   }
 };

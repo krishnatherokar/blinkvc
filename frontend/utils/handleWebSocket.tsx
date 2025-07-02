@@ -114,7 +114,6 @@ const handleWebSocket = async (
     case "disconnected":
       setData("Peer disconnected");
       setChat(null);
-      endVideoCall(localStreamRef, localvideoRef, remotevideoRef);
       break;
 
     case "chat":
