@@ -1,5 +1,6 @@
 "use client";
 import { useToast } from "@/contexts/GlobalToastContext";
+import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { AiOutlineLoading } from "react-icons/ai";
 import { MdCheck } from "react-icons/md";
@@ -52,11 +53,15 @@ const Toast = ({
     }
   };
   return (
-    <>
+    <AnimatePresence>
       {message?.callerId && (
-        <div
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: -50 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: -50 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
           className="fixed w-screen top-0 right-0 z-10
-          sm:w-120"
+        sm:w-120"
         >
           <div
             className="bg-gray-200 p-4 m-2 rounded-xl
@@ -78,10 +83,14 @@ const Toast = ({
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
       {message?.toastType && (
-        <div
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: -50 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: -50 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
           className="fixed z-10 top-0 right-0 w-screen
           sm:w-120"
           onClick={() => setMessage(null)}
@@ -92,9 +101,9 @@ const Toast = ({
           >
             {renderToast(message)}
           </div>
-        </div>
+        </motion.div>
       )}
-    </>
+    </AnimatePresence>
   );
 };
 export default Toast;

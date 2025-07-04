@@ -127,7 +127,7 @@ const VideoScreen = ({
         <motion.div
           layout
           className={data == "connected" ? "h-fit w-fit" : "fixed inset-0 z-7"}
-          transition={{ duration: 0.2, ease: "easeInOut" }}
+          transition={{ duration: 0.1 }}
         >
           <video
             onClick={() => swapVideo()}
@@ -137,7 +137,7 @@ const VideoScreen = ({
             className={`${
               data == "connected"
                 ? "rounded-bl-2xl max-w-50 max-h-50 object-contain sm:max-w-xs"
-                : "h-screen w-screen object-cover"
+                : "fixed z-7 top-0 left-0 h-screen w-screen object-cover"
             } transform scale-x-[-1]`}
           />
         </motion.div>
@@ -151,11 +151,11 @@ const VideoScreen = ({
         <AnimatePresence>
           {data == "connected" && (
             <motion.div
-              initial={{ y: -50 }}
-              animate={{ y: 0 }}
-              exit={{ y: -50 }}
+              initial={{ opacity: 0, x: 200 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 200 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="flex-1 z-8
+              className="flex-1 z-8 transition duration-200
               md:max-w-xs md:min-w-2xs"
             >
               <section
@@ -181,9 +181,9 @@ const VideoScreen = ({
       <AnimatePresence mode="wait">
         <motion.div
           key={isChatVisible ? 1 : 0}
-          initial={{ y: 200 }}
-          animate={{ y: 0 }}
-          exit={{ y: 200 }}
+          initial={{ opacity: 0, y: 200 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 200 }}
           transition={{ duration: 0.2, ease: "easeInOut" }}
           className="fixed z-9 bottom-0 right-0 w-screen text-lg bg-neutral-100 rounded-t-2xl
           sm:w-sm sm:rounded-tr-none

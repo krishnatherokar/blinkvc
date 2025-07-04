@@ -5,6 +5,10 @@ body {
   font-family: var(--font-sans);
 }
 
+* {
+  transition: background-color .2s;
+}
+
 *:focus {
   outline: none;
 }
@@ -13,4 +17,9 @@ body {
   background: transparent;
   width: 0;
   height: 0;
+}
+
+svg:active {
+  transform: scale(0.9);
+  transition: transform 0.2s;
 }
