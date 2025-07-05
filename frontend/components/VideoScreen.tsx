@@ -38,6 +38,12 @@ const VideoScreen = ({
 
   const router = useRouter();
 
+  useEffect(() => {
+    return () => {
+      setChat(null);
+    };
+  }, []);
+
   const reload = () => {
     setIsAudioOn(true);
     setIsVideoOn(true);
