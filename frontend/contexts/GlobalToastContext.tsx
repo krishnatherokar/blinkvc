@@ -54,18 +54,22 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const notifyUser = (callerId: string, body: string) => {
-    if (Notification.permission === "granted") {
-      const notification = new Notification("🔔 Incoming Call", {
-        body,
-        icon: "/images/favicon.svg",
-        requireInteraction: true,
-      });
+    try {
+      if (Notification.permission === "granted") {
+        const notification = new Notification("🔔 Incoming Call", {
+          body,
+          icon: "/images/favicon.svg",
+          requireInteraction: true,
+        });
 
-      notification.onclick = () => {
-        window.focus();
-        setMessage(null);
-        window.location.href = `/call?type=accept-call&targetId=${callerId}`;
-      };
+        notification.onclick = () => {
+          window.focus();
+          setMessage(null);
+          window.location.href = `/call?type=accept-call&targetId=${callerId}`;
+        };
+      }
+    } catch (err) {
+      console.warn(err);
     }
   };
 
