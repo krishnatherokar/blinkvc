@@ -1,18 +1,14 @@
 "use client";
-import { RedirectToSignUp, SignedIn, SignedOut } from "@clerk/nextjs";
+import Loading from "@/components/Loading";
+import { RedirectToSignUp, useUser } from "@clerk/nextjs";
 
 export default function ProtectedPage({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  return (
-    <>
-      <SignedIn>{children}</SignedIn>
-      <SignedOut>
-        <RedirectToSignUp />
-      </SignedOut>
-    </>
-  );
-  return null;
+}) {
+  const { isLoaded, isSignedIn } = useUser();
+  if (!isLoaded) return <Loading />;
+  if (!isSignedIn) return <RedirectToSignUp />;
+  return children;
 }

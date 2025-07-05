@@ -1,11 +1,10 @@
 "use client";
-import Loading from "@/components/Loading";
 import { useToast } from "@/contexts/GlobalToastContext";
 import { useUserContext } from "@/contexts/UserContext";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineAddIcCall } from "react-icons/md";
 import FriendsList from "./FriendList";
 import MissedCalls from "./MissedCalls";
@@ -17,6 +16,12 @@ const CallLayout = () => {
   const { user, loading, refreshUser } = useUserContext();
   const { triggerToast, errorToast, confirm } = useToast();
   const router = useRouter();
+
+  const [delayedLoading, setDelayedLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setDelayedLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const unFriend = async (element: userArrayElement) => {
     try {
@@ -43,6 +48,14 @@ const CallLayout = () => {
 
   const clearMissedCalls = async () => {
     try {
+      const userChoice = await confirm({
+        text: `Are you sure you want to clear all the missed calls?`,
+        confirmText: "Clear",
+        isRisky: true,
+      });
+
+      if (!userChoice) return;
+
       triggerToast({ toastType: "info", text: "Clearing missed calls..." });
       await axios.post("/api/call/clearmissedcalls");
 
@@ -55,7 +68,7 @@ const CallLayout = () => {
 
   const callPeer = async (element: userArrayElement) => {
     const userChoice = await confirm({
-      text: `Start video call to @${element.username}?`,
+      text: `Start video call with @${element.username}?`,
       confirmText: "Call",
     });
 
@@ -68,10 +81,19 @@ const CallLayout = () => {
     router.push(`/call?type=call-to&targetId=${element.clerkId}`);
   };
 
-  const MissedCallProps = { user, callPeer, clearMissedCalls };
-  const FriendListProps = { user, callPeer, unFriend, setNewCallScreen };
-
-  if (loading) return <Loading />;
+  const MissedCallProps = {
+    user,
+    loading: loading || delayedLoading,
+    callPeer,
+    clearMissedCalls,
+  };
+  const FriendListProps = {
+    user,
+    loading: loading || delayedLoading,
+    callPeer,
+    unFriend,
+    setNewCallScreen,
+  };
 
   return (
     <section>

@@ -3,13 +3,16 @@ import StickyTitle from "@/components/StickyTitle";
 import { MdArrowBack } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { userArrayElement } from "./page";
+import { SkeletonCard } from "@/components/Loading";
 
 const SentRequests = ({
   user,
+  loading,
   unsendReq,
   setSentReqPage,
 }: {
   user: any;
+  loading: boolean;
   unsendReq: (id: String) => void;
   setSentReqPage: React.Dispatch<React.SetStateAction<boolean>>;
 }) => (
@@ -25,7 +28,13 @@ const SentRequests = ({
       />
       Requests Sent<span className="sm:hidden float-end">&emsp;</span>
     </StickyTitle>
-    {user.req_sent.length ? (
+    {loading ? (
+      <>
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
+      </>
+    ) : user.req_sent.length ? (
       <>
         {user.req_sent.map((element: userArrayElement, idx: number) => (
           <PeopleCard key={idx} username={element.username}>

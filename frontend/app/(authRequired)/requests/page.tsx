@@ -1,9 +1,8 @@
 "use client";
-import Loading from "@/components/Loading";
 import { useToast } from "@/contexts/GlobalToastContext";
 import { useUserContext } from "@/contexts/UserContext";
 import axios from "axios";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ReceivedRequests from "./ReceivedRequests";
 import SentRequests from "./SentRequests";
@@ -14,6 +13,12 @@ const page = () => {
   const [sentReqPage, setSentReqPage] = useState(false);
   const { user, loading, refreshUser } = useUserContext();
   const { triggerToast, errorToast, confirm } = useToast();
+
+  const [delayedLoading, setDelayedLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setDelayedLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const sendReq = async (targetUsername: string) => {
     try {
@@ -35,7 +40,7 @@ const page = () => {
   const unsendReq = async (targetId: String) => {
     try {
       const userChoice = await confirm({
-        text: "Are you sure you want to unsend the request",
+        text: "Are you sure you want to unsend the request?",
         confirmText: "Unsend",
         isRisky: true,
       });
@@ -58,7 +63,7 @@ const page = () => {
   const rejectReq = async (targetId: String) => {
     try {
       const userChoice = await confirm({
-        text: "Are you sure you want to reject the request",
+        text: "Are you sure you want to reject the request?",
         confirmText: "Reject",
         isRisky: true,
       });
@@ -93,16 +98,20 @@ const page = () => {
     }
   };
 
-  if (loading) return <Loading />;
-
   const leftProps = {
     user,
+    loading: loading || delayedLoading,
     sendReq,
     setSentReqPage,
     acceptReq,
     rejectReq,
   };
-  const rightProps = { user, unsendReq, setSentReqPage };
+  const rightProps = {
+    user,
+    loading: loading || delayedLoading,
+    unsendReq,
+    setSentReqPage,
+  };
 
   return (
     <>

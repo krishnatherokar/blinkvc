@@ -7,3 +7,15 @@ export default function Loading() {
     </section>
   );
 }
+
+export function SkeletonCard() {
+  return (
+    <div className="flex my-4 p-4 mx-auto max-w-80 animate-pulse">
+      <div className="h-8 w-8 inline-block justify-center mr-2 rounded-full bg-neutral-100 dark:bg-neutral-900"></div>
+      <div className="flex-1">
+        <div className="h-3 mb-2 rounded-xs bg-neutral-100 dark:bg-neutral-900"></div>
+        <div className="h-3 w-15 rounded-xs bg-neutral-100 dark:bg-neutral-900"></div>
+      </div>
+    </div>
+  );
+}

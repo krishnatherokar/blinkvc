@@ -2,13 +2,16 @@ import PeopleCard, { NoPeople } from "@/components/PeopleCard";
 import StickyTitle from "@/components/StickyTitle";
 import { LuVideo } from "react-icons/lu";
 import { userArrayElement } from "../requests/page";
+import { SkeletonCard } from "@/components/Loading";
 
 const MissedCalls = ({
   user,
+  loading,
   callPeer,
   clearMissedCalls,
 }: {
   user: any;
+  loading: boolean;
   callPeer: (user: userArrayElement) => void;
   clearMissedCalls: () => void;
 }) => {
@@ -20,19 +23,21 @@ const MissedCalls = ({
     >
       <StickyTitle>
         Missed Calls
-        {user.missed_calls.length ? (
-          <>
-            <span className="float-start">&emsp;</span>
-            <button
-              className="float-end font-light text-red-500 text-md"
-              onClick={clearMissedCalls}
-            >
-              Clear All
-            </button>
-          </>
-        ) : null}
+        <span className="float-start">&emsp;</span>
+        <button
+          className="float-end font-light text-red-500 text-md"
+          onClick={clearMissedCalls}
+        >
+          Clear All
+        </button>
       </StickyTitle>
-      {user.missed_calls.length ? (
+      {loading ? (
+        <>
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </>
+      ) : user.missed_calls.length ? (
         <>
           {user.missed_calls.map((element: userArrayElement, idx: number) => (
             <PeopleCard key={idx} username={element.username}>

@@ -6,17 +6,20 @@ import { Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import { MdArrowBack } from "react-icons/md";
 import { AiOutlineUserAdd, AiOutlineUserDelete } from "react-icons/ai";
+import { SkeletonCard } from "@/components/Loading";
 
 const FriendsList = ({
+  user,
+  loading,
   setNewCallScreen,
   callPeer,
   unFriend,
-  user,
 }: {
+  user: any;
+  loading: boolean;
   setNewCallScreen: Dispatch<SetStateAction<boolean>>;
   callPeer: (user: userArrayElement) => void;
   unFriend: (user: userArrayElement) => void;
-  user: any;
 }) => {
   const router = useRouter();
   return (
@@ -33,7 +36,13 @@ const FriendsList = ({
         Friends
         <span className="float-end sm:hidden">&emsp;</span>
       </StickyTitle>
-      {user.friends.length ? (
+      {loading ? (
+        <>
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </>
+      ) : user.friends.length ? (
         <>
           {user.friends.map((element: userArrayElement, idx: number) => (
             <PeopleCard key={idx} username={element.username}>

@@ -3,15 +3,18 @@ import StickyTitle from "@/components/StickyTitle";
 import { MdCheck } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { userArrayElement } from "./page";
+import { SkeletonCard } from "@/components/Loading";
 
 const ReceivedRequests = ({
   user,
+  loading,
   sendReq,
   setSentReqPage,
   acceptReq,
   rejectReq,
 }: {
   user: any;
+  loading: boolean;
   sendReq: (targetUsername: string) => void;
   setSentReqPage: React.Dispatch<React.SetStateAction<boolean>>;
   acceptReq: (id: String) => void;
@@ -63,7 +66,13 @@ const ReceivedRequests = ({
 
     <section className="flex-1">
       <StickyTitle>Requests Received</StickyTitle>
-      {user.requests.length ? (
+      {loading ? (
+        <>
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </>
+      ) : user.requests.length ? (
         <>
           {user.requests.map((element: userArrayElement, idx: number) => (
             <PeopleCard key={idx} username={element.username}>
