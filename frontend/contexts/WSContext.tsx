@@ -1,6 +1,13 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useToast } from "./GlobalToastContext";
 import axios from "axios";
 
@@ -21,6 +28,21 @@ export const WebSocketProvider = ({
   const [count, setCount] = useState(0);
   const { user, isLoaded } = useUser();
   const { triggerToast } = useToast();
+
+  const callAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    callAudioRef.current = new Audio("/sounds/notifSound.mp3");
+    callAudioRef.current.preload = "auto";
+    callAudioRef.current.volume = 0.8;
+  }, []);
+
+  const playNotifSound = useCallback(() => {
+    if (callAudioRef.current) {
+      callAudioRef.current.currentTime = 0;
+      callAudioRef.current.play().catch(() => {});
+    }
+  }, []);
 
   const ping = async () => {
     await axios.get(
@@ -50,6 +72,9 @@ export const WebSocketProvider = ({
             callerId: data.callerId,
             text: `Call from @${data.callername}`,
           });
+          break;
+        case "chat":
+          playNotifSound();
           break;
       }
     };

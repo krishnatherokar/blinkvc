@@ -43,7 +43,7 @@ const handleWebSocket = async (
       if (data.response == "Ringing") {
         setTimeout(() => {
           setData((data: String) => (data == "Ringing" ? "Unanswered" : data));
-        }, 15000);
+        }, 30000);
       }
       break;
 

@@ -7,6 +7,8 @@ import React, {
   useEffect,
   useState,
   ReactNode,
+  useRef,
+  useCallback,
 } from "react";
 
 type messageType = {
@@ -31,6 +33,45 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [message, setMessage] = useState<messageType | null>(null);
+  const callAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    callAudioRef.current = new Audio("/sounds/callSound.mp3");
+    callAudioRef.current.loop = true;
+    callAudioRef.current.preload = "auto";
+
+    if (typeof window !== "undefined" && "Notification" in window) {
+      if (Notification.permission === "default")
+        Notification.requestPermission();
+    }
+  }, []);
+
+  const playCallSound = useCallback(() => {
+    if (callAudioRef.current) {
+      callAudioRef.current.currentTime = 0;
+      callAudioRef.current.play().catch(() => {});
+    }
+  }, []);
+
+  const notifyUser = (callerId: string, body: string) => {
+    if (Notification.permission === "granted") {
+      const notification = new Notification("🔔 Incoming Call", {
+        body,
+        icon: "/images/favicon.svg",
+        requireInteraction: true,
+      });
+
+      notification.onclick = () => {
+        window.focus();
+        setMessage(null);
+        window.location.href = `/call?type=accept-call&targetId=${callerId}`;
+      };
+    }
+  };
+
+  const stopCallSound = useCallback(() => {
+    if (callAudioRef.current) callAudioRef.current.pause();
+  }, []);
 
   const errorToast = (err: any) => {
     setMessage({
@@ -41,9 +82,17 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!message) return;
-    let t = message.callerId ? 15000 : 3000;
+    let t = message.callerId ? 30000 : 3000;
     const timer = setTimeout(() => setMessage(null), t);
-    return () => clearTimeout(timer);
+    if (message.callerId) {
+      playCallSound();
+      notifyUser(message.callerId, message.text);
+    }
+
+    return () => {
+      clearTimeout(timer);
+      stopCallSound();
+    };
   }, [message]);
 
   // confirm logic:
