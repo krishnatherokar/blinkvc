@@ -5,6 +5,11 @@ import Navbar from "@/components/Navbar";
 import { WebSocketProvider } from "@/contexts/WSContext";
 import { UserProvider } from "@/contexts/UserContext";
 import { ToastProvider } from "@/contexts/GlobalToastContext";
+import { Urbanist } from "next/font/google";
+
+const fontFamily = Urbanist({
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Blinkvc",
@@ -21,7 +26,7 @@ export default function RootLayout({
       <ToastProvider>
         <WebSocketProvider>
           <UserProvider>
-            <html lang="en">
+            <html lang="en" className={fontFamily.className}>
               <body
                 className="bg-white text-neutral-800
               dark:bg-black dark:text-white"
