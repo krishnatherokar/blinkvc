@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
@@ -12,8 +12,48 @@ const fontFamily = Urbanist({
 });
 
 export const metadata: Metadata = {
-  title: "Blinkvc",
-  description: "A basic Next app",
+  title: "BlinkVC",
+  description: "Video chat that connects you in a blink!",
+  authors: [
+    { name: "Krishna Therokar", url: "https://github.com/krishnatherokar" },
+    {
+      name: "Krishna Therokar",
+      url: "https://linkedin.com/in/krishnatherokar",
+    },
+  ],
+  generator: "Next.js",
+  keywords: [
+    "BlinkVC",
+    "video chat",
+    "random video call",
+    "online video call",
+    "instant video call",
+    "peer to peer call",
+  ],
+  applicationName: "BlinkVC",
+  creator: "Krishna Therokar",
+  publisher: "BlinkVC",
+  openGraph: {
+    title: "BlinkVC",
+    description: "Video chat that connects you in a blink!",
+    url: "https://blinkvc.vercel.app",
+    siteName: "BlinkVC",
+    type: "website",
+  },
+  twitter: {
+    title: "BlinkVC",
+    description: "Video chat that connects you in a blink!",
+    creator: "@krishnatherokar",
+  },
+  icons: {
+    icon: "/images/favicon.svg",
+    shortcut: "/images/favicon.svg",
+  },
+  metadataBase: new URL("https://blinkvc.vercel.app"),
+};
+
+export const viewport: Viewport = {
+  themeColor: "#2563eb",
 };
 
 export default function RootLayout({
