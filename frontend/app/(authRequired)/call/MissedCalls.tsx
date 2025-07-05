@@ -23,9 +23,9 @@ const MissedCalls = ({
     >
       <StickyTitle>
         Missed Calls
-        <span className="float-start">&emsp;</span>
+        <span className="float-start">&emsp;&emsp;&nbsp;</span>
         <button
-          className="float-end font-light text-red-500 text-md"
+          className="float-end font-normal text-red-500 text-sm py-1"
           onClick={clearMissedCalls}
         >
           Clear All
