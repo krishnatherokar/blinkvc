@@ -1,12 +1,13 @@
-const sendCallReq = (socket, targetId) => {
+const sendCallReq = async (socket, targetId) => {
+  const allowed = await checkFriends(socket, targetId);
+  if (!allowed) return;
+
   const targetSocket = onlineMap.get(targetId);
   if (!targetSocket) {
     socket.send(
       JSON.stringify({ type: "call-response", response: "Peer offline" })
     );
   } else {
-    if (!checkFriends(socket, targetId)) return;
-
     targetSocket.send(
       JSON.stringify({
         type: "call-request",
@@ -41,7 +42,10 @@ const checkFriends = async (socket, targetId) => {
   areFriends = await areFriends.text();
   if (areFriends != "friends") {
     socket.send(
-      JSON.stringify({ type: "call-response", response: "not-allowed" })
+      JSON.stringify({
+        type: "call-response",
+        response: "You must be friends to send a call request",
+      })
     );
     return false;
   }
