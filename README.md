@@ -1,9 +1,8 @@
 # BlinkVC
+Live Demo: [blinkvc.vercel.app](https://blinkvc.vercel.app)
 ![Illustration](frontend/public/images/videoCall.svg)
 
 **BlinkVC** is a real-time video chat platform where you can instantly connect with random people or sign up to chat with your friends. It combines video, chat, and secure identity management.
-
-[![Deployment](https://img.shields.io/badge/Deployed%20on-Vercel-000?logo=vercel&style=flat-square)](https://blinkvc.vercel.app)
 
 ## Tech Stack
 
