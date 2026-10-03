@@ -1,0 +1,6 @@
+{
+  "name": "BlinkVC",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "forwardPorts": [3000, 4000],
+  "postCreateCommand": "cd backend && npm install && cd ../frontend && npm install"
+}
